@@ -1,0 +1,57 @@
+{
+  "name": "t-rest",
+  "version": "1.0.0",
+  "description": "Typescript REST server based on restify",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "typings": "src/index.d.ts",
+  "typescript": {
+    "definition": "src/index.d.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/pteyssedre/t-rest.git"
+  },
+  "scripts": {
+    "compile": "gulp",
+    "test": "mocha ."
+  },
+  "author": {
+    "name": "Pierre Teyssedre",
+    "email": "pierre@teyssedre.ca",
+    "url": "https://www.teyssedre.ca/"
+  },
+  "keywords": [
+    "typescript",
+    "restify",
+    "server",
+    "controller",
+    "teyssedre"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/jsonwebtoken": "^8.3.0",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^11.9.0",
+    "@types/node-rsa": "^1.0.0",
+    "@types/restify": "^7.2.7",
+    "@types/sinon": "^7.0.5",
+    "gulp": "^4.0.0",
+    "gulp-clean": "^0.4.0",
+    "gulp-typescript": "^5.0.0",
+    "mocha": "^5.2.0",
+    "ts-node": "^8.0.2",
+    "tslint": "^5.12.1"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^8.4.0",
+    "moment": "^2.24.0",
+    "node-rsa": "^1.0.3",
+    "reflect-metadata": "^0.1.13",
+    "restify": "^7.7.0",
+    "teys-injector": "^1.0.2",
+    "typescript": "^3.3.3",
+    "ursa": "^0.9.4"
+  }
+}
