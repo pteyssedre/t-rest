@@ -26,7 +26,10 @@ export declare abstract class RestController {
     setupRoutes(): void;
     protected promiseHandler(prom: (req: Request, res: Response, next: Next) => Promise<any>, req: Request, res: Response, next: Next): Promise<any>;
 }
+export declare function created(rep: Response, data: any): any;
+export declare function accepted(rep: Response, data: any): any;
 export declare function ok(rep: Response, data: any): any;
+export declare function notModified(rep: Response, data: any): any;
 export declare function notFound(rep: Response, data: any): any;
 export declare function error(rep: Response, data: any): any;
 export declare function Delete(path?: string): <T extends RestController>(target: T, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;

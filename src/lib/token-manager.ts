@@ -36,8 +36,6 @@ export class TokenManager {
                 if (err) {
                     console.error(err);
                 }
-                const d = jwt.decode(tokenValue);
-                console.log(d, decoded);
                 return resolve(decoded);
             });
 

@@ -83,8 +83,20 @@ export abstract class RestController {
     }
 }
 
+export function created(rep: Response, data: any) {
+    return rep.send(201, data);
+}
+
+export function accepted(rep: Response, data: any) {
+    return rep.send(202, data);
+}
+
 export function ok(rep: Response, data: any) {
     return rep.send(200, data);
+}
+
+export function notModified(rep: Response, data: any) {
+    return rep.send(304, data);
 }
 
 export function notFound(rep: Response, data: any) {

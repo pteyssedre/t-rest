@@ -139,10 +139,22 @@ var RestController = /** @class */ (function () {
     return RestController;
 }());
 exports.RestController = RestController;
+function created(rep, data) {
+    return rep.send(201, data);
+}
+exports.created = created;
+function accepted(rep, data) {
+    return rep.send(202, data);
+}
+exports.accepted = accepted;
 function ok(rep, data) {
     return rep.send(200, data);
 }
 exports.ok = ok;
+function notModified(rep, data) {
+    return rep.send(304, data);
+}
+exports.notModified = notModified;
 function notFound(rep, data) {
     return rep.send(404, data);
 }

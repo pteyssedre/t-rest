@@ -78,8 +78,6 @@ var TokenManager = /** @class */ (function () {
                             if (err) {
                                 console.error(err);
                             }
-                            var d = jwt.decode(tokenValue);
-                            console.log(d, decoded);
                             return resolve(decoded);
                         });
                     })];
