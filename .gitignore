@@ -62,3 +62,4 @@ typings/
 
 # ide folder
 .idea
+.idea/*
