@@ -16,15 +16,17 @@ export interface AuthorizedRequest extends Request {
 }
 export declare abstract class RestController {
     protected pathBase: string;
+    protected version: string;
     protected apiPath: string;
     protected server: restify.Server;
-    protected constructor(server: restify.Server, pathBase: string);
+    protected constructor(server: restify.Server, pathBase: string, version?: string);
     postRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>): void;
     getRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>): void;
     patchRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>): void;
     deleteRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>): void;
     setupRoutes(): void;
     protected promiseHandler(prom: (req: Request, res: Response, next: Next) => Promise<any>, req: Request, res: Response, next: Next): Promise<any>;
+    private getFullPath;
 }
 export declare function created(rep: Response, data: any): any;
 export declare function accepted(rep: Response, data: any): any;

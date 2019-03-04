@@ -44,15 +44,17 @@ var UserRole;
     UserRole[UserRole["Admin"] = 15] = "Admin";
 })(UserRole = exports.UserRole || (exports.UserRole = {}));
 var RestController = /** @class */ (function () {
-    function RestController(server, pathBase) {
+    function RestController(server, pathBase, version) {
+        if (version === void 0) { version = 'v1'; }
         this.pathBase = pathBase;
-        this.apiPath = "/api/v1";
+        this.version = version;
+        this.apiPath = "/api/";
         this.server = server;
         this.setupRoutes();
     }
     RestController.prototype.postRequest = function (path, prom) {
         var _this = this;
-        this.server.post(this.apiPath + "/" + this.pathBase + "/" + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        this.server.post(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             var exception_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -73,7 +75,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.getRequest = function (path, prom) {
         var _this = this;
-        this.server.get(this.apiPath + "/" + this.pathBase + "/" + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        this.server.get(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
@@ -86,7 +88,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.patchRequest = function (path, prom) {
         var _this = this;
-        this.server.patch(this.apiPath + "/" + this.pathBase + "/" + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        this.server.patch(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
@@ -99,7 +101,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.deleteRequest = function (path, prom) {
         var _this = this;
-        this.server.del(this.apiPath + "/" + this.pathBase + "/" + path, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        this.server.del(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
@@ -135,6 +137,12 @@ var RestController = /** @class */ (function () {
                 }
             });
         }); });
+    };
+    RestController.prototype.getFullPath = function (path) {
+        if (path) {
+            return this.apiPath + "/" + this.version + "/" + this.pathBase + "/" + path;
+        }
+        return this.apiPath + "/" + this.version + "/" + this.pathBase;
     };
     return RestController;
 }());
@@ -249,7 +257,7 @@ function Authorize() {
                             tokenManager = teys_injector_1.Injector.Resolve("_class_tokenmanager");
                             userProvider = teys_injector_1.Injector.Resolve("_class_userprovider");
                             if (!tokenManager || !userProvider) {
-                                res.send(500, { error: "server errors" });
+                                res.send(500, { error: "server errors", details: "tokenManager or userProvider missing" });
                                 if (next) {
                                     return [2 /*return*/, resolve(next())];
                                 }
@@ -276,7 +284,7 @@ function Authorize() {
                             return [3 /*break*/, 7];
                         case 3:
                             if (status.minuteLeft < 5) {
-                                res.header('x-token-renew', 'true');
+                                res.header('x-token-renew', status.minuteLeft);
                             }
                             _a = req;
                             return [4 /*yield*/, userProvider.userById(read.audience)];

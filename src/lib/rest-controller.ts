@@ -9,9 +9,11 @@ export enum UserRole {
     SuperUser = 1 << 1,
     Admin = ~(~0 << 4),
 }
+
 export interface RestUser {
 
 }
+
 export interface UserProvider {
     userById(id: number | string): RestUser;
 }
@@ -22,16 +24,16 @@ export interface AuthorizedRequest extends Request {
 
 export abstract class RestController {
 
-    protected apiPath: string = "/api/v1";
+    protected apiPath: string = "/api/";
     protected server: restify.Server;
 
-    protected constructor(server: restify.Server, protected pathBase: string) {
+    protected constructor(server: restify.Server, protected pathBase: string, protected version: string = 'v1') {
         this.server = server;
         this.setupRoutes();
     }
 
     public postRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.server.post(`${this.apiPath}/${this.pathBase}/${path}`,
+        this.server.post(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 try {
                     await this.promiseHandler(prom, req, res, next);
@@ -43,21 +45,21 @@ export abstract class RestController {
     }
 
     public getRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.server.get(`${this.apiPath}/${this.pathBase}/${path}`,
+        this.server.get(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
             });
     }
 
     public patchRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.server.patch(`${this.apiPath}/${this.pathBase}/${path}`,
+        this.server.patch(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
             });
     }
 
     public deleteRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.server.del(`${this.apiPath}/${this.pathBase}/${path}`,
+        this.server.del(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
             });
@@ -80,6 +82,13 @@ export abstract class RestController {
                 return resolve();
             }
         });
+    }
+
+    private getFullPath(path: string) {
+        if (path) {
+            return `${this.apiPath}/${this.version}/${this.pathBase}/${path}`;
+        }
+        return `${this.apiPath}/${this.version}/${this.pathBase}`
     }
 }
 
@@ -175,7 +184,7 @@ export function Authorize(...roles: UserRole[]) {
                 const tokenManager: TokenManager | undefined = Injector.Resolve("_class_tokenmanager");
                 const userProvider: UserProvider | undefined = Injector.Resolve("_class_userprovider");
                 if (!tokenManager || !userProvider) {
-                    res.send(500, {error: "server errors"});
+                    res.send(500, {error: "server errors", details: "tokenManager or userProvider missing"});
                     if (next) {
                         return resolve(next());
                     } else {
@@ -195,7 +204,7 @@ export function Authorize(...roles: UserRole[]) {
                         }
                     } else {
                         if (status.minuteLeft < 5) {
-                            res.header('x-token-renew', 'true');
+                            res.header('x-token-renew', status.minuteLeft);
                         }
                         req.identity = await userProvider.userById(read.audience);
                         const prom = original.apply(this, args);
