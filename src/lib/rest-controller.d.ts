@@ -17,7 +17,9 @@ export interface AuthorizedRequest extends Request {
 export declare abstract class RestController {
     protected pathBase: string;
     protected version: string;
-    protected apiPath: string;
+    private readonly apiPrefix;
+    private readonly logOptions;
+    private readonly console;
     protected server: restify.Server;
     protected constructor(server: restify.Server, pathBase: string, version?: string);
     postRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>): void;

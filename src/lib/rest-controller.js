@@ -1,4 +1,13 @@
 "use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -36,6 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var teys_injector_1 = require("teys-injector");
+var lazy_format_logger_1 = require("lazy-format-logger");
 var UserRole;
 (function (UserRole) {
     UserRole[UserRole["None"] = 0] = "None";
@@ -48,12 +58,13 @@ var RestController = /** @class */ (function () {
         if (version === void 0) { version = 'v1'; }
         this.pathBase = pathBase;
         this.version = version;
-        this.apiPath = "/api/";
+        this.console = new lazy_format_logger_1.Logger(this.logOptions);
         this.server = server;
         this.setupRoutes();
     }
     RestController.prototype.postRequest = function (path, prom) {
         var _this = this;
+        this.console.d(this.constructor.name, "register POST method", path);
         this.server.post(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             var exception_1;
             return __generator(this, function (_a) {
@@ -75,6 +86,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.getRequest = function (path, prom) {
         var _this = this;
+        this.console.d(this.constructor.name, "register GET method", path);
         this.server.get(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -88,6 +100,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.patchRequest = function (path, prom) {
         var _this = this;
+        this.console.d(this.constructor.name, "register PATCH method", path);
         this.server.patch(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -101,6 +114,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.deleteRequest = function (path, prom) {
         var _this = this;
+        this.console.d(this.constructor.name, "register DELETE method", path);
         this.server.del(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -117,6 +131,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.promiseHandler = function (prom, req, res, next) {
         var _this = this;
+        this.console.d(this.constructor.name, "handling request", req.method, req.getUrl().path);
         return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
             var exception_2;
             return __generator(this, function (_a) {
@@ -129,7 +144,7 @@ var RestController = /** @class */ (function () {
                         return [2 /*return*/, resolve()];
                     case 2:
                         exception_2 = _a.sent();
-                        console.log(exception_2);
+                        this.console.e(this.constructor.name, "could not resolve request", req.getUrl(), 'returning 500', exception_2.message);
                         res.send(500, { error: exception_2.message });
                         next();
                         return [2 /*return*/, resolve()];
@@ -140,10 +155,18 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.getFullPath = function (path) {
         if (path) {
-            return this.apiPath + "/" + this.version + "/" + this.pathBase + "/" + path;
+            return "/" + this.apiPrefix + "/" + this.version + "/" + this.pathBase + "/" + path;
         }
-        return this.apiPath + "/" + this.version + "/" + this.pathBase;
+        return "/" + this.apiPrefix + "/" + this.version + "/" + this.pathBase;
     };
+    __decorate([
+        teys_injector_1.Inject("api-route"),
+        __metadata("design:type", String)
+    ], RestController.prototype, "apiPrefix", void 0);
+    __decorate([
+        teys_injector_1.Inject("log-config"),
+        __metadata("design:type", lazy_format_logger_1.LogOptions)
+    ], RestController.prototype, "logOptions", void 0);
     return RestController;
 }());
 exports.RestController = RestController;

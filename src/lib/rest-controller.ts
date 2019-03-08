@@ -1,7 +1,8 @@
 import * as restify from "restify";
 import { Next, Request, Response } from "restify";
-import { Injector } from "teys-injector";
+import { Inject, Injector } from "teys-injector";
 import { TokenManager } from "./token-manager";
+import { Logger, LogOptions } from "lazy-format-logger";
 
 export enum UserRole {
     None = 0,
@@ -24,15 +25,21 @@ export interface AuthorizedRequest extends Request {
 
 export abstract class RestController {
 
-    protected apiPath: string = "/api/";
+    @Inject("api-route")
+    private readonly apiPrefix: string;
+    @Inject("log-config")
+    private readonly logOptions: LogOptions;
+    private readonly console: Logger;
     protected server: restify.Server;
 
     protected constructor(server: restify.Server, protected pathBase: string, protected version: string = 'v1') {
+        this.console = new Logger(this.logOptions);
         this.server = server;
         this.setupRoutes();
     }
 
     public postRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
+        this.console.d(this.constructor.name, `register POST method`, path);
         this.server.post(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 try {
@@ -45,6 +52,7 @@ export abstract class RestController {
     }
 
     public getRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
+        this.console.d(this.constructor.name, `register GET method`, path);
         this.server.get(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
@@ -52,6 +60,7 @@ export abstract class RestController {
     }
 
     public patchRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
+        this.console.d(this.constructor.name, `register PATCH method`, path);
         this.server.patch(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
@@ -59,6 +68,7 @@ export abstract class RestController {
     }
 
     public deleteRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
+        this.console.d(this.constructor.name, `register DELETE method`, path);
         this.server.del(this.getFullPath(path),
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
@@ -71,12 +81,15 @@ export abstract class RestController {
 
     protected promiseHandler(prom: (req: Request, res: Response, next: Next) => Promise<any>,
                              req: Request, res: Response, next: Next) {
+        this.console.d(this.constructor.name, `handling request`, req.method, req.getUrl().path);
         return new Promise<any>(async (resolve) => {
             try {
                 await prom.call(this, req, res, next);
                 return resolve();
             } catch (exception) {
-                console.log(exception);
+                this.console.e(this.constructor.name,
+                    `could not resolve request`, req.getUrl(),
+                    'returning 500', exception.message);
                 res.send(500, {error: exception.message});
                 next();
                 return resolve();
@@ -86,9 +99,9 @@ export abstract class RestController {
 
     private getFullPath(path: string) {
         if (path) {
-            return `${this.apiPath}/${this.version}/${this.pathBase}/${path}`;
+            return `/${this.apiPrefix}/${this.version}/${this.pathBase}/${path}`;
         }
-        return `${this.apiPath}/${this.version}/${this.pathBase}`
+        return `/${this.apiPrefix}/${this.version}/${this.pathBase}`
     }
 }
 
