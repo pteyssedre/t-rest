@@ -1,0 +1,10 @@
+import { Response } from "restify";
+export declare function created(rep: Response, data: any): any;
+export declare function accepted(rep: Response, data: any): any;
+export declare function ok(rep: Response, data: any): any;
+export declare function notModified(rep: Response, data: any): any;
+export declare function notFound(rep: Response, data: any): any;
+export declare function notAuthorized(rep: Response, data: any): any;
+export declare function forbidden(rep: Response, data: any): any;
+export declare function badRequest(rep: Response, data: any): any;
+export declare function error(rep: Response, data: any): any;
