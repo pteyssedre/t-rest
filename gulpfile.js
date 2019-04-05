@@ -1,7 +1,7 @@
-const {src, dest, series} = require('gulp');
-const gClean = require('gulp-clean');
-const typescript = require('gulp-typescript');
-const tsProject = typescript.createProject('tsconfig.json');
+const {src, dest, series} = require("gulp");
+const gClean = require("gulp-clean");
+const typescript = require("gulp-typescript");
+const tsProject = typescript.createProject("tsconfig.json");
 
 function compile() {
     return tsProject.src()
@@ -12,13 +12,13 @@ function compile() {
 function clean() {
     return src(
         [
-            'src/**/*.js',
-            'src/**/*.d.ts',
-            'dist/**/*.js',
-            'dist/**/*.d.ts',
-            'test/**/*.d.ts',
-            'test/**/*.js',
-        ], {read: false}
+            "src/**/*.js",
+            "src/**/*.d.ts",
+            "dist/**/*.js",
+            "dist/**/*.d.ts",
+            "test/**/*.d.ts",
+            "test/**/*.js",
+        ], {read: false},
     ).pipe(gClean());
 }
 

@@ -1,40 +1,43 @@
 import * as fs from "fs";
 import * as jwt from "jsonwebtoken";
-
-import { CryptoHelper } from "./crypto-helper";
-import { Inject, Injectable } from "teys-injector";
-import { UserRole } from "./rest-controller";
+import {Logger, LogOptions} from "lazy-format-logger";
 import moment = require("moment");
+import {Inject, Injectable} from "teys-injector";
+import {UserRole} from "../base/rest-controller";
+import {CryptoHelper} from "../helpers/crypto-helper";
+import {Token} from "../models";
 
 @Injectable()
-export class TokenManager {
+export class JwtTokenManager {
 
     @Inject()
     private crypto: CryptoHelper;
     @Inject("token-domain")
-    private domain: string;
+    private readonly domain: string;
     @Inject("token-duration")
-    private duration: string;
+    private readonly duration: string;
+    @Inject("log-config")
+    private readonly logOptions: LogOptions;
+    private readonly console: Logger;
 
-    public async createAuthenticationToken(userId: number | string, roles?: number): Promise<any> {
+    async createAuthenticationToken(userId: number | string, roles?: number): Promise<string> {
         const token = {
             algorithm: "HS256",
             audience: userId,
-            roles: roles,
             expiresIn: this.duration,
-            time: new Date().getTime(),
             issuer: this.domain,
+            roles,
             subject: "credentials",
-
+            time: new Date().getTime(),
         };
         return jwt.sign(token, fs.readFileSync(this.crypto.privatePath));
     }
 
-    public async readJwt(tokenValue: string): Promise<any> {
-        return new Promise<any>(resolve => {
+    async readJwt(tokenValue: string): Promise<Token> {
+        return new Promise<any>((resolve) => {
             jwt.verify(tokenValue, fs.readFileSync(this.crypto.privatePath), (err, decoded) => {
                 if (err) {
-                    console.error(err);
+                    this.console.e(this.constructor.name, err);
                 }
                 return resolve(decoded);
             });
@@ -42,20 +45,20 @@ export class TokenManager {
         });
     }
 
-    public tokenStatus(claims: any, roles: UserRole[] = []): { valid: boolean, minuteLeft: number } {
+    tokenStatus(claims: any, roles: UserRole[] = []): { valid: boolean, minuteLeft: number } {
         try {
             const time = claims.expiresIn.split("");
             const tokenTime = moment(claims.time).add(time[0], time[1]);
             const now = moment();
             const expired = tokenTime.isBefore(now);
             if (expired) {
-                console.error(`Token expired:${claims.time} token:${claims}`);
+                this.console.e(this.constructor.name, `Token expired:${claims.time} token:${claims}`);
                 return {valid: false, minuteLeft: 0};
             }
             const minuteLeft = tokenTime.diff(now, "minute");
             const valid = claims && claims.issuer === this.domain;
             if (!valid) {
-                console.error(`Token authentic:${valid} token:${claims}`);
+                this.console.e(this.constructor.name, `Token authentic:${valid} token:${claims}`);
                 return {valid, minuteLeft};
             }
             if (roles && roles.length > 0) {
@@ -64,7 +67,7 @@ export class TokenManager {
             }
             return {valid, minuteLeft};
         } catch (exception) {
-            console.error(exception.message);
+            this.console.e(this.constructor.name, exception.message);
         }
         return {valid: false, minuteLeft: 0};
     }

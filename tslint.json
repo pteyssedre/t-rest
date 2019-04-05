@@ -4,6 +4,13 @@
     "tslint:recommended"
   ],
   "jsRules": {},
-  "rules": {},
+  "rules": {
+    "no-console": false,
+    "member-access": false,
+    "no-bitwise": false,
+    "interface-name": false,
+    "only-arrow-functions": false,
+    "no-empty": false
+  },
   "rulesDirectory": []
 }

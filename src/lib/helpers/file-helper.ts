@@ -4,14 +4,14 @@ import * as path from "path";
 export class FileHelper {
 
     static copyFileAsync(sourcePath: string, destinationPath: string): Promise<boolean> {
-        return new Promise<boolean>(resolve => {
+        return new Promise<boolean>((resolve) => {
             const source = fs.createReadStream(sourcePath);
             const destination = fs.createWriteStream(destinationPath);
             source.pipe(destination);
-            source.on('end', () => {
+            source.on("end", () => {
                 return resolve(true);
             });
-            source.on('error', () => {
+            source.on("error", () => {
                 return resolve(false);
             });
         });

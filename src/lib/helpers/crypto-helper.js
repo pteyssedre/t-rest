@@ -44,7 +44,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var NodeRSA = require("node-rsa");
 var path = require("path");
-var ursa = require("ursa");
 var teys_injector_1 = require("teys-injector");
 var file_helper_1 = require("./file-helper");
 var CryptoHelper = /** @class */ (function () {
@@ -73,8 +72,8 @@ var CryptoHelper = /** @class */ (function () {
                                     _a.sent();
                                     _a.label = 3;
                                 case 3:
-                                    this.key = ursa.createPrivateKey(fs.readFileSync(this.privatePath));
-                                    this.crt = ursa.createPublicKey(fs.readFileSync(this.publicPath));
+                                    this.key = new NodeRSA(fs.readFileSync(this.privatePath));
+                                    this.crt = new NodeRSA(fs.readFileSync(this.publicPath));
                                     return [2 /*return*/, resolve()];
                                 case 4:
                                     exception_1 = _a.sent();

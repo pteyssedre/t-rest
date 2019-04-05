@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "1.0.4",
+  "version": "2.0.0",
   "description": "Typescript REST server based on restify",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -13,7 +13,7 @@
     "url": "git+ssh://git@github.com/pteyssedre/teys-rest.git"
   },
   "scripts": {
-    "compile": "gulp",
+    "start": "gulp",
     "test": "mocha ."
   },
   "author": {
@@ -52,7 +52,6 @@
     "reflect-metadata": "^0.1.13",
     "restify": "^7.7.0",
     "teys-injector": "^1.0.3",
-    "typescript": "^3.3.3",
-    "ursa": "^0.9.4"
+    "typescript": "^3.4.1"
   }
 }
