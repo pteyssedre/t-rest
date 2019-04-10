@@ -20,7 +20,12 @@ export class JwtTokenManager {
     private readonly logOptions: LogOptions;
     private readonly console: Logger;
 
+    constructor() {
+        this.console = new Logger(this.logOptions);
+    }
+
     async createAuthenticationToken(userId: number | string, roles?: number): Promise<string> {
+        this.console.d(this.constructor.name, "createAuthenticationToken", `for userId: ${userId}`);
         const token = {
             algorithm: "HS256",
             audience: userId,
@@ -34,6 +39,7 @@ export class JwtTokenManager {
     }
 
     async readJwt(tokenValue: string): Promise<Token> {
+        this.console.d(this.constructor.name, "readJwt", tokenValue);
         return new Promise<any>((resolve) => {
             jwt.verify(tokenValue, fs.readFileSync(this.crypto.privatePath), (err, decoded) => {
                 if (err) {
@@ -46,6 +52,7 @@ export class JwtTokenManager {
     }
 
     tokenStatus(claims: any, roles: UserRole[] = []): { valid: boolean, minuteLeft: number } {
+        this.console.d(this.constructor.name, "tokenStatus", `for claims`, claims);
         try {
             const time = claims.expiresIn.split("");
             const tokenTime = moment(claims.time).add(time[0], time[1]);

@@ -119,10 +119,10 @@ function Authorize() {
                                     return [2 /*return*/, resolve()];
                                 }
                             }
-                            tokenManager = teys_injector_1.Injector.Resolve("_class_tokenmanager");
-                            userProvider = teys_injector_1.Injector.Resolve("_class_userprovider");
+                            tokenManager = teys_injector_1.Injector.Resolve("_class_jwttokenmanager");
+                            userProvider = teys_injector_1.Injector.Resolve("_class_restuserprovider");
                             if (!tokenManager || !userProvider) {
-                                res.send(500, { error: "server errors", details: "tokenManager or userProvider missing" });
+                                res.send(500, { error: "server errors", details: "JwtTokenManager or RestUserProvider are missing" });
                                 if (next) {
                                     return [2 /*return*/, resolve(next())];
                                 }

@@ -1,9 +1,7 @@
 import {Logger, LogOptions} from "lazy-format-logger";
 import * as restify from "restify";
 import {Next, Request, Response} from "restify";
-import {Inject, Injector} from "teys-injector";
-import {JwtTokenManager} from "../tokens/jwt-token-manager";
-import {RestUserProvider} from "./providers";
+import {Inject} from "teys-injector";
 
 export enum UserRole {
     None = 0,

@@ -52,11 +52,13 @@ var teys_injector_1 = require("teys-injector");
 var crypto_helper_1 = require("../helpers/crypto-helper");
 var JwtTokenManager = /** @class */ (function () {
     function JwtTokenManager() {
+        this.console = new lazy_format_logger_1.Logger(this.logOptions);
     }
     JwtTokenManager.prototype.createAuthenticationToken = function (userId, roles) {
         return __awaiter(this, void 0, void 0, function () {
             var token;
             return __generator(this, function (_a) {
+                this.console.d(this.constructor.name, "createAuthenticationToken", "for userId: " + userId);
                 token = {
                     algorithm: "HS256",
                     audience: userId,
@@ -74,6 +76,7 @@ var JwtTokenManager = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
+                this.console.d(this.constructor.name, "readJwt", tokenValue);
                 return [2 /*return*/, new Promise(function (resolve) {
                         jwt.verify(tokenValue, fs.readFileSync(_this.crypto.privatePath), function (err, decoded) {
                             if (err) {
@@ -87,6 +90,7 @@ var JwtTokenManager = /** @class */ (function () {
     };
     JwtTokenManager.prototype.tokenStatus = function (claims, roles) {
         if (roles === void 0) { roles = []; }
+        this.console.d(this.constructor.name, "tokenStatus", "for claims", claims);
         try {
             var time = claims.expiresIn.split("");
             var tokenTime = moment(claims.time).add(time[0], time[1]);
@@ -130,7 +134,8 @@ var JwtTokenManager = /** @class */ (function () {
         __metadata("design:type", lazy_format_logger_1.LogOptions)
     ], JwtTokenManager.prototype, "logOptions", void 0);
     JwtTokenManager = __decorate([
-        teys_injector_1.Injectable()
+        teys_injector_1.Injectable(),
+        __metadata("design:paramtypes", [])
     ], JwtTokenManager);
     return JwtTokenManager;
 }());

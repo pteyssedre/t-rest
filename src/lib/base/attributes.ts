@@ -1,7 +1,7 @@
 import {Injector} from "teys-injector";
+import {JwtTokenManager} from "../tokens/jwt-token-manager";
 import {RestUserProvider} from "./providers";
 import {RestController, UserRole} from "./rest-controller";
-import {JwtTokenManager} from "../tokens/jwt-token-manager";
 
 export function Delete(path: string = "") {
     return function <T extends RestController>(target: T, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -68,10 +68,10 @@ export function Authorize(...roles: UserRole[]) {
                         return resolve();
                     }
                 }
-                const tokenManager: JwtTokenManager | undefined = Injector.Resolve("_class_tokenmanager");
-                const userProvider: RestUserProvider | undefined = Injector.Resolve("_class_userprovider");
+                const tokenManager: JwtTokenManager | undefined = Injector.Resolve("_class_jwttokenmanager");
+                const userProvider: RestUserProvider | undefined = Injector.Resolve("_class_restuserprovider");
                 if (!tokenManager || !userProvider) {
-                    res.send(500, {error: "server errors", details: "tokenManager or userProvider missing"});
+                    res.send(500, {error: "server errors", details: "JwtTokenManager or RestUserProvider are missing"});
                     if (next) {
                         return resolve(next());
                     } else {

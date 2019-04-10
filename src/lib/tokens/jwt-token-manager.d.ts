@@ -6,6 +6,7 @@ export declare class JwtTokenManager {
     private readonly duration;
     private readonly logOptions;
     private readonly console;
+    constructor();
     createAuthenticationToken(userId: number | string, roles?: number): Promise<string>;
     readJwt(tokenValue: string): Promise<Token>;
     tokenStatus(claims: any, roles?: UserRole[]): {
