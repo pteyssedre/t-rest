@@ -68,6 +68,11 @@ export function Authorize(...roles: UserRole[]) {
                         return resolve();
                     }
                 }
+                // @ts-ignore
+                if (this.console) {
+                    // @ts-ignore
+                    this.console.d(target.constructor.name, "trying to see if it works");
+                }
                 const tokenManager: JwtTokenManager | undefined = Injector.Resolve("_class_jwttokenmanager");
                 const userProvider: RestUserProvider | undefined = Injector.Resolve("_class_restuserprovider");
                 if (!tokenManager || !userProvider) {

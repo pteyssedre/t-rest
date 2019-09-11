@@ -22,10 +22,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -57,87 +58,39 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var teys_injector_1 = require("teys-injector");
-var lib_1 = require("../../lib");
-var AccountController = /** @class */ (function (_super) {
-    __extends(AccountController, _super);
-    function AccountController(server, path, version) {
-        return _super.call(this, server, path, version) || this;
+var base_1 = require("../../lib/base");
+var DefaultStatsController = /** @class */ (function (_super) {
+    __extends(DefaultStatsController, _super);
+    function DefaultStatsController(server) {
+        return _super.call(this, server, "stats") || this;
     }
-    AccountController.prototype.login = function (req, res) {
+    DefaultStatsController.prototype.testEcho = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var user, token;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!req.body || !req.body.username || !req.body.passsword) {
-                            return [2 /*return*/, lib_1.badRequest(res, { details: "invalid data" })];
-                        }
-                        return [4 /*yield*/, this.userProvider
-                                .validateCredentials(req.body.username, req.body.password)];
-                    case 1:
-                        user = _a.sent();
-                        if (!user) {
-                            return [2 /*return*/, lib_1.forbidden(res, { details: "invalid credentials" })];
-                        }
-                        if (!user.uuid) {
-                            return [2 /*return*/, lib_1.error(res, { details: "invalid user" })];
-                        }
-                        return [4 /*yield*/, this.tokenManager.createAuthenticationToken(user.uuid, user.roles)];
-                    case 2:
-                        token = _a.sent();
-                        if (!this.tokenProvider) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.tokenProvider.saveToken(token)];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4: return [2 /*return*/, lib_1.ok(res, { detail: "login successful", token: token })];
-                }
+                return [2 /*return*/, base_1.ok(res, { done: true, date: new Date().toISOString() })];
             });
         });
     };
-    AccountController.prototype.register = function (req, res) {
+    DefaultStatsController.prototype.testAuth = function (req, res) {
         return __awaiter(this, void 0, void 0, function () {
-            var post, user;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        post = req.body;
-                        if (!post || !post.isValid()) {
-                            return [2 /*return*/, lib_1.badRequest(res, { details: "invalid data" })];
-                        }
-                        return [4 /*yield*/, this.userProvider.registerUser(post)];
-                    case 1:
-                        user = _a.sent();
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/, base_1.ok(res, { done: true, date: new Date().toISOString(), user: req.identity })];
             });
         });
     };
     __decorate([
-        teys_injector_1.Inject(),
-        __metadata("design:type", lib_1.JwtTokenManager)
-    ], AccountController.prototype, "tokenManager", void 0);
-    __decorate([
-        teys_injector_1.Inject(),
-        __metadata("design:type", lib_1.RestUserProvider)
-    ], AccountController.prototype, "userProvider", void 0);
-    __decorate([
-        teys_injector_1.Inject(),
-        __metadata("design:type", lib_1.TokenProvider)
-    ], AccountController.prototype, "tokenProvider", void 0);
-    __decorate([
-        lib_1.Post(),
+        base_1.Get("echo"),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
-    ], AccountController.prototype, "login", null);
+    ], DefaultStatsController.prototype, "testEcho", null);
     __decorate([
-        lib_1.Post(),
+        base_1.Get("user"),
+        base_1.Authorize(),
         __metadata("design:type", Function),
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
-    ], AccountController.prototype, "register", null);
-    return AccountController;
-}(lib_1.RestController));
-exports.AccountController = AccountController;
+    ], DefaultStatsController.prototype, "testAuth", null);
+    return DefaultStatsController;
+}(base_1.RestController));
+exports.DefaultStatsController = DefaultStatsController;

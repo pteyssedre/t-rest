@@ -15,7 +15,7 @@ export class ApiServer {
     private readonly logOptions: LogOptions;
     private readonly console: Logger;
 
-    constructor(domain: string, version: string, authTime: string, props: ServerOptions) {
+    constructor(domain: string, version: string, authTime: string, props?: ServerOptions) {
         this.logOptions = new LogOptions();
         Injector.Register("log-config", this.logOptions);
         Injector.Register("token-domain", domain);
@@ -28,6 +28,9 @@ export class ApiServer {
     }
 
     async beforeStart(): Promise<void> {
+        // todo add mandatory stuff CORS etc...
+        // todo logging action
+        this.console.d("beforeStart done");
     }
 
     async start(): Promise<void> {
@@ -38,10 +41,13 @@ export class ApiServer {
         } catch (e) {
             // log error
         }
+        this.console.d("start done");
         await this.afterStart();
     }
 
     async afterStart(): Promise<void> {
+        // todo logging action
+        this.console.d("afterStart done");
     }
 
     changeLogLevel(level: LogLevel) {

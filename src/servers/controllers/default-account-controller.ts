@@ -17,16 +17,16 @@ export class AccountController extends RestController {
 
     @Inject()
     private readonly tokenManager: JwtTokenManager;
-    @Inject()
+    @Inject("_class_restuserprovider")
     private readonly userProvider: RestUserProvider;
-    @Inject()
+    @Inject("_class_tokenprovider")
     private readonly tokenProvider: TokenProvider;
 
     constructor(server: restify.Server, path: string, version: string) {
         super(server, path, version);
     }
 
-    @Post()
+    @Post("authenticate")
     async login(req: Request, res: Response) {
         if (!req.body || !req.body.username || !req.body.passsword) {
             return badRequest(res, {details: "invalid data"});
@@ -46,12 +46,13 @@ export class AccountController extends RestController {
         return ok(res, {detail: "login successful", token});
     }
 
-    @Post()
+    @Post("register")
     async register(req: Request, res: Response) {
         const post = req.body as RegisterModel;
         if (!post || !post.isValid()) {
             return badRequest(res, {details: "invalid data"});
         }
         const user = await this.userProvider.registerUser(post);
+        return ok(res, user);
     }
 }

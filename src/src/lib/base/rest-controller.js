@@ -9,10 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -58,14 +59,15 @@ var RestController = /** @class */ (function () {
         if (version === void 0) { version = "v1"; }
         this.pathBase = pathBase;
         this.version = version;
-        this.console = new lazy_format_logger_1.Logger(this.logOptions);
+        this.console = new lazy_format_logger_1.Logger(this.logOptions, this.constructor.name);
         this.server = server;
         this.setupRoutes();
     }
     RestController.prototype.postRequest = function (path, prom) {
         var _this = this;
-        this.console.d(this.constructor.name, "register POST method", path);
-        this.server.post(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        var p = this.getFullPath(path);
+        this.console.d("register POST method", p);
+        this.server.post(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             var exception_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -86,8 +88,9 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.getRequest = function (path, prom) {
         var _this = this;
-        this.console.d(this.constructor.name, "register GET method", path);
-        this.server.get(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        var p = this.getFullPath(path);
+        this.console.d("register GET method", p);
+        this.server.get(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
@@ -100,8 +103,9 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.patchRequest = function (path, prom) {
         var _this = this;
-        this.console.d(this.constructor.name, "register PATCH method", path);
-        this.server.patch(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        var p = this.getFullPath(path);
+        this.console.d("register PATCH method", p);
+        this.server.patch(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
@@ -114,8 +118,9 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.deleteRequest = function (path, prom) {
         var _this = this;
-        this.console.d(this.constructor.name, "register DELETE method", path);
-        this.server.del(this.getFullPath(path), function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+        var p = this.getFullPath(path);
+        this.console.d("register DELETE method", p);
+        this.server.del(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
@@ -131,7 +136,7 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.promiseHandler = function (prom, req, res, next) {
         var _this = this;
-        this.console.d(this.constructor.name, "handling request", req.method, req.getUrl().path);
+        this.console.d("handling request", req.method, req.getUrl().path);
         return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
             var exception_2;
             return __generator(this, function (_a) {
@@ -155,7 +160,8 @@ var RestController = /** @class */ (function () {
     };
     RestController.prototype.getFullPath = function (path) {
         if (path) {
-            return "/" + this.apiPrefix + "/" + this.version + "/" + this.pathBase + "/" + path;
+            var sanitized = path.indexOf("/") === 0 ? path.substring(1, path.length) : path;
+            return "/" + this.apiPrefix + "/" + this.version + "/" + this.pathBase + "/" + sanitized;
         }
         return "/" + this.apiPrefix + "/" + this.version + "/" + this.pathBase;
     };

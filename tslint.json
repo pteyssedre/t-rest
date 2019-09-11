@@ -10,7 +10,8 @@
     "no-bitwise": false,
     "interface-name": false,
     "only-arrow-functions": false,
-    "no-empty": false
+    "no-empty": false,
+    "no-var-requires": false
   },
   "rulesDirectory": []
 }

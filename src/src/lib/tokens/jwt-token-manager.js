@@ -9,10 +9,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -47,18 +48,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var jwt = require("jsonwebtoken");
 var lazy_format_logger_1 = require("lazy-format-logger");
-var moment = require("moment");
 var teys_injector_1 = require("teys-injector");
-var crypto_helper_1 = require("../helpers/crypto-helper");
+var helpers_1 = require("../helpers");
+var moment = require("moment");
 var JwtTokenManager = /** @class */ (function () {
     function JwtTokenManager() {
-        this.console = new lazy_format_logger_1.Logger(this.logOptions);
+        this.console = new lazy_format_logger_1.Logger(this.logOptions, this.constructor.name);
     }
     JwtTokenManager.prototype.createAuthenticationToken = function (userId, roles) {
         return __awaiter(this, void 0, void 0, function () {
             var token;
             return __generator(this, function (_a) {
-                this.console.d(this.constructor.name, "createAuthenticationToken", "for userId: " + userId);
+                this.console.d("createAuthenticationToken", "for userId: " + userId);
                 token = {
                     algorithm: "HS256",
                     audience: userId,
@@ -76,11 +77,11 @@ var JwtTokenManager = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                this.console.d(this.constructor.name, "readJwt", tokenValue);
+                this.console.d("readJwt", tokenValue);
                 return [2 /*return*/, new Promise(function (resolve) {
                         jwt.verify(tokenValue, fs.readFileSync(_this.crypto.privatePath), function (err, decoded) {
                             if (err) {
-                                _this.console.e(_this.constructor.name, err);
+                                _this.console.e(err);
                             }
                             return resolve(decoded);
                         });
@@ -90,20 +91,20 @@ var JwtTokenManager = /** @class */ (function () {
     };
     JwtTokenManager.prototype.tokenStatus = function (claims, roles) {
         if (roles === void 0) { roles = []; }
-        this.console.d(this.constructor.name, "tokenStatus", "for claims", claims);
+        this.console.d("tokenStatus", "for claims", claims);
         try {
             var time = claims.expiresIn.split("");
             var tokenTime = moment(claims.time).add(time[0], time[1]);
             var now = moment();
             var expired = tokenTime.isBefore(now);
             if (expired) {
-                this.console.e(this.constructor.name, "Token expired:" + claims.time + " token:" + claims);
+                this.console.e("Token expired:" + claims.time + " token:" + claims);
                 return { valid: false, minuteLeft: 0 };
             }
             var minuteLeft = tokenTime.diff(now, "minute");
             var valid = claims && claims.issuer === this.domain;
             if (!valid) {
-                this.console.e(this.constructor.name, "Token authentic:" + valid + " token:" + claims);
+                this.console.e("Token authentic:" + valid + " token:" + claims);
                 return { valid: valid, minuteLeft: minuteLeft };
             }
             if (roles && roles.length > 0) {
@@ -113,13 +114,13 @@ var JwtTokenManager = /** @class */ (function () {
             return { valid: valid, minuteLeft: minuteLeft };
         }
         catch (exception) {
-            this.console.e(this.constructor.name, exception.message);
+            this.console.e(exception.message);
         }
         return { valid: false, minuteLeft: 0 };
     };
     __decorate([
         teys_injector_1.Inject(),
-        __metadata("design:type", crypto_helper_1.CryptoHelper)
+        __metadata("design:type", helpers_1.CryptoHelper)
     ], JwtTokenManager.prototype, "crypto", void 0);
     __decorate([
         teys_injector_1.Inject("token-domain"),

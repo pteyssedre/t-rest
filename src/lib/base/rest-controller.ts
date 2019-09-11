@@ -32,14 +32,15 @@ export abstract class RestController {
     private readonly console: Logger;
 
     protected constructor(server: restify.Server, protected pathBase: string, protected version: string = "v1") {
-        this.console = new Logger(this.logOptions);
+        this.console = new Logger(this.logOptions, this.constructor.name);
         this.server = server;
         this.setupRoutes();
     }
 
     postRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.console.d(this.constructor.name, `register POST method`, path);
-        this.server.post(this.getFullPath(path),
+        const p = this.getFullPath(path);
+        this.console.d(`register POST method`, p);
+        this.server.post(p,
             async (req: Request, res: Response, next: Next) => {
                 try {
                     await this.promiseHandler(prom, req, res, next);
@@ -51,24 +52,27 @@ export abstract class RestController {
     }
 
     getRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.console.d(this.constructor.name, `register GET method`, path);
-        this.server.get(this.getFullPath(path),
+        const p = this.getFullPath(path);
+        this.console.d(`register GET method`, p);
+        this.server.get(p,
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
             });
     }
 
     patchRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.console.d(this.constructor.name, `register PATCH method`, path);
-        this.server.patch(this.getFullPath(path),
+        const p = this.getFullPath(path);
+        this.console.d(`register PATCH method`, p);
+        this.server.patch(p,
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
             });
     }
 
     deleteRequest(path: string, prom: (req: Request, res: Response, next: Next) => Promise<any>) {
-        this.console.d(this.constructor.name, `register DELETE method`, path);
-        this.server.del(this.getFullPath(path),
+        const p = this.getFullPath(path);
+        this.console.d(`register DELETE method`, p);
+        this.server.del(p,
             async (req: Request, res: Response, next: Next) => {
                 await this.promiseHandler(prom, req, res, next);
             });
@@ -80,7 +84,7 @@ export abstract class RestController {
 
     protected promiseHandler(prom: (req: Request, res: Response, next: Next) => Promise<any>,
                              req: Request, res: Response, next: Next) {
-        this.console.d(this.constructor.name, `handling request`, req.method, req.getUrl().path);
+        this.console.d(`handling request`, req.method, req.getUrl().path);
         return new Promise<any>(async (resolve) => {
             try {
                 await prom.call(this, req, res, next);
@@ -98,7 +102,8 @@ export abstract class RestController {
 
     private getFullPath(path: string) {
         if (path) {
-            return `/${this.apiPrefix}/${this.version}/${this.pathBase}/${path}`;
+            const sanitized = path.indexOf("/") === 0 ? path.substring(1, path.length) : path;
+            return `/${this.apiPrefix}/${this.version}/${this.pathBase}/${sanitized}`;
         }
         return `/${this.apiPrefix}/${this.version}/${this.pathBase}`;
     }

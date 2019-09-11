@@ -1,4 +1,4 @@
-import { UserRole } from "../base/rest-controller";
+import { UserRole } from "../base";
 import { Token } from "../models";
 export declare class JwtTokenManager {
     private crypto;
