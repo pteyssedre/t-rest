@@ -2,10 +2,10 @@ import {Request, Response} from "restify";
 import * as restify from "restify";
 import {Authorize, AuthorizedRequest, Get, ok, RestController} from "../../lib/base";
 
-export class StatsController extends RestController {
+export class DefaultStatsController extends RestController {
 
-    constructor(server: restify.Server, path: string, version: string) {
-        super(server, path, version);
+    constructor(server: restify.Server) {
+        super(server, "stats");
     }
 
     @Get("echo")

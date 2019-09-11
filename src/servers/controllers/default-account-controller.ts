@@ -13,7 +13,7 @@ import {
     TokenProvider,
 } from "../../lib";
 
-export class AccountController extends RestController {
+export class DefaultAccountController extends RestController {
 
     @Inject()
     private readonly tokenManager: JwtTokenManager;
@@ -22,8 +22,8 @@ export class AccountController extends RestController {
     @Inject("_class_tokenprovider")
     private readonly tokenProvider: TokenProvider;
 
-    constructor(server: restify.Server, path: string, version: string) {
-        super(server, path, version);
+    constructor(server: restify.Server, version: string) {
+        super(server, "account", version);
     }
 
     @Post("authenticate")
