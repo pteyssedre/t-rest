@@ -48,7 +48,6 @@ var StaticFileController = /** @class */ (function () {
     StaticFileController.prototype.proxify = function (proxyElement, req, res) {
         var q = req.getQuery();
         var uri = "" + proxyElement.target + req.path() + (q ? "?" + q : "");
-        console.log("executing", uri);
         return http_1.HttpClient.get(uri)
             .then(function (response) {
             res.writeHead(Number(response.statusCode), response.headers);

@@ -186,7 +186,6 @@ describe("Testing pre-register servers", function () {
                     response = _a.sent();
                     assert(response.status === 200, "not working");
                     assert(response.headers["content-type"].indexOf("image/jpeg") > -1, "not html");
-                    console.log(response.data);
                     return [2 /*return*/];
             }
         });
