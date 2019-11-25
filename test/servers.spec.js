@@ -76,7 +76,7 @@ describe("Testing pre-register servers", function () {
             switch (_a.label) {
                 case 0:
                     teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
-                    spa = new SpaServer_1.SpaServer({ filePath: path.join(__dirname, "./") }, { separator: "@" });
+                    spa = new SpaServer_1.SpaServer({ filePath: path.join(__dirname, "./") });
                     // @ts-ignore
                     return [4 /*yield*/, spa.startWithControllers(default_account_controller_1.DefaultAccountController, default_stats_controller_1.DefaultStatsController)];
                 case 1:

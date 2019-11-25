@@ -53,8 +53,17 @@ var helpers_1 = require("../helpers");
 var moment = require("moment");
 var JwtTokenManager = /** @class */ (function () {
     function JwtTokenManager() {
-        this.console = new lazy_format_logger_1.Logger(this.logOptions, this.constructor.name);
     }
+    Object.defineProperty(JwtTokenManager.prototype, "console", {
+        get: function () {
+            if (!this._console) {
+                this._console = new lazy_format_logger_1.Logger(this.logOptions, this.constructor.name);
+            }
+            return this._console;
+        },
+        enumerable: true,
+        configurable: true
+    });
     JwtTokenManager.prototype.createAuthenticationToken = function (userId, roles) {
         return __awaiter(this, void 0, void 0, function () {
             var token;

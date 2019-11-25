@@ -6,7 +6,7 @@ const tsProject = typescript.createProject("tsconfig.json");
 function compile() {
     return tsProject.src()
         .pipe(tsProject())
-        .pipe(dest("src"));
+        .pipe(dest("./"));
 }
 
 function clean() {
