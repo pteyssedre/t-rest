@@ -11,6 +11,7 @@ export interface SpaServerOptions extends ServerOptions {
     domain?: string;
     version?: string;
     authTime?: string;
+    proxy?: { [key: string]: { target: string } };
 }
 
 export class SpaServer extends ApiServer {

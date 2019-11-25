@@ -20,7 +20,12 @@ let spa: SpaServer;
 describe("Testing pre-register servers", () => {
     before(async () => {
         Injector.Register("_class_restuserprovider", new RestUserProvider());
-        spa = new SpaServer({filePath: path.join(__dirname, "./")});
+        spa = new SpaServer({
+            filePath: path.join(__dirname, "./"),
+            proxy: {
+                "/images": {target: "https://static.lpnt.fr"},
+            },
+        });
         // @ts-ignore
         await spa.startWithControllers(DefaultAccountController, DefaultStatsController);
     });
@@ -64,6 +69,19 @@ describe("Testing pre-register servers", () => {
         assert(response.status === 200, "not working");
         assert(response.headers["content-type"] === "application/json", "not json file");
         assert(JSON.stringify(response.data) === JSON.stringify({data: 1}), "not data file");
+    });
+
+    it("Should return 404", async () => {
+        const response = await axios.default.get("http://localhost:3000/data2.json",
+            {validateStatus: () => true});
+        assert(response.status === 404, "not working");
+    });
+
+    it("Should return images results", async () => {
+        const response = await axios.default.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg",
+            {validateStatus: () => true});
+        assert(response.status === 200, "not working");
+        assert(response.headers["content-type"].indexOf("image/jpeg") > -1, "not html");
     });
 
     after(async () => {

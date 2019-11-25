@@ -76,7 +76,12 @@ describe("Testing pre-register servers", function () {
             switch (_a.label) {
                 case 0:
                     teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
-                    spa = new SpaServer_1.SpaServer({ filePath: path.join(__dirname, "./") });
+                    spa = new SpaServer_1.SpaServer({
+                        filePath: path.join(__dirname, "./"),
+                        proxy: {
+                            "/images": { target: "https://static.lpnt.fr" },
+                        },
+                    });
                     // @ts-ignore
                     return [4 /*yield*/, spa.startWithControllers(default_account_controller_1.DefaultAccountController, default_stats_controller_1.DefaultStatsController)];
                 case 1:
@@ -156,6 +161,32 @@ describe("Testing pre-register servers", function () {
                     assert(response.status === 200, "not working");
                     assert(response.headers["content-type"] === "application/json", "not json file");
                     assert(JSON.stringify(response.data) === JSON.stringify({ data: 1 }), "not data file");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Should return 404", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/data2.json", { validateStatus: function () { return true; } })];
+                case 1:
+                    response = _a.sent();
+                    assert(response.status === 404, "not working");
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it("Should return images results", function () { return __awaiter(void 0, void 0, void 0, function () {
+        var response;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg", { validateStatus: function () { return true; } })];
+                case 1:
+                    response = _a.sent();
+                    assert(response.status === 200, "not working");
+                    assert(response.headers["content-type"].indexOf("image/jpeg") > -1, "not html");
+                    console.log(response.data);
                     return [2 /*return*/];
             }
         });

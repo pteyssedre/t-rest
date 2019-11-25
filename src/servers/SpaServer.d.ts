@@ -8,6 +8,11 @@ export interface SpaServerOptions extends ServerOptions {
     domain?: string;
     version?: string;
     authTime?: string;
+    proxy?: {
+        [key: string]: {
+            target: string;
+        };
+    };
 }
 export declare class SpaServer extends ApiServer {
     private readonly props;

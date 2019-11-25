@@ -5,5 +5,6 @@ export declare class StaticFileController {
     private props;
     private readonly mainPath;
     constructor(server: restify.Server, props: SpaServerOptions);
-    matchFile(req: Request, res: Response): void;
+    matchFile(req: Request, res: Response): any;
+    private proxify;
 }

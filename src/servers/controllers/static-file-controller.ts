@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as restify from "restify";
 import {Request, Response} from "restify";
+import {HttpClient} from "../../lib/helpers/http";
 import {SpaServerOptions} from "../SpaServer";
 
 const mime = require("mime-types");
@@ -13,7 +14,20 @@ export class StaticFileController {
     constructor(server: restify.Server, private props: SpaServerOptions) {
         this.mainPath = props.filePath;
         server.get("/*", (req, res) => {
-            return this.matchFile(req, res);
+            try {
+                if (this.props.proxy) {
+                    const datas = Object.keys(this.props.proxy);
+                    const p = req.path();
+                    const match = datas.filter((e: string) => p.indexOf(e) === 0).shift();
+                    if (match) {
+                        return this.proxify(this.props.proxy[match], req, res);
+                    }
+                }
+                return this.matchFile(req, res);
+            } catch (e) {
+                console.error("[StaticFileController]", e.message);
+                return res.send(404);
+            }
         });
     }
 
@@ -24,6 +38,9 @@ export class StaticFileController {
             p = req.path();
         }
         const filePath = path.join(this.mainPath, p);
+        if (!fs.existsSync(filePath)) {
+            return res.send(404);
+        }
         const stat = fs.statSync(filePath);
 
         res.writeHead(200, {
@@ -33,5 +50,17 @@ export class StaticFileController {
 
         const readStream = fs.createReadStream(filePath);
         readStream.pipe(res);
+    }
+
+    private proxify(proxyElement: { target: string }, req: Request, res: Response) {
+        const q = req.getQuery();
+        const uri = `${proxyElement.target}${req.path()}${q ? `?${q}` : ""}`;
+        return HttpClient.get(uri)
+            .then((response) => {
+                res.writeHead(Number(response.statusCode), response.headers);
+                response.file.pipe(res);
+            }).catch((error) => {
+                return res.send(500, error.message);
+            });
     }
 }
