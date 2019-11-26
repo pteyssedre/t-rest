@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "Typescript REST server based on restify",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -47,6 +47,7 @@
     "tslint": "^5.20.1"
   },
   "dependencies": {
+    "@types/restify-cors-middleware": "^1.0.1",
     "jsonwebtoken": "^8.5.1",
     "lazy-format-logger": "^1.0.3",
     "mime-types": "^2.1.25",
@@ -54,6 +55,7 @@
     "node-rsa": "^1.0.6",
     "reflect-metadata": "^0.1.13",
     "restify": "^7.7.0",
+    "restify-cors-middleware": "^1.1.1",
     "teys-injector": "^1.0.3",
     "typescript": "^3.7.2"
   }

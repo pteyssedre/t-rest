@@ -47,25 +47,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var lazy_format_logger_1 = require("lazy-format-logger");
 var restify = require("restify");
+var corsMiddleware = require("restify-cors-middleware");
 var teys_injector_1 = require("teys-injector");
 var lib_1 = require("../lib");
 var ApiServer = /** @class */ (function () {
-    function ApiServer(domain, apiPath, authTime, props, logs) {
+    function ApiServer(props, logs) {
+        props = Object.assign(ApiServer_1.defaultConfig, props || {});
+        this.props = props;
         this.logOptions = logs ? logs : new lazy_format_logger_1.LogOptions();
         teys_injector_1.Injector.Register("log-config", this.logOptions);
-        teys_injector_1.Injector.Register("token-domain", domain);
-        teys_injector_1.Injector.Register("api-route", apiPath);
-        teys_injector_1.Injector.Register("token-duration", authTime);
+        teys_injector_1.Injector.Register("token-domain", props.domain || "localhost:" + (props.port || 3000));
+        teys_injector_1.Injector.Register("api-route", props.apiRoute || "api");
+        teys_injector_1.Injector.Register("token-duration", props.authTime || "1h");
         this.console = new lazy_format_logger_1.Logger(this.logOptions, "ApiServer");
-        this.restify = restify.createServer(props);
-        this.restify.use(restify.plugins.bodyParser());
-        this.restify.use(restify.plugins.queryParser());
+        this.restify = restify.createServer(this.props);
     }
+    ApiServer_1 = ApiServer;
+    Object.defineProperty(ApiServer, "defaultConfig", {
+        get: function () {
+            return { domain: "localhost", port: 3000, apiRoute: "api", authTime: "1h", version: "v1" };
+        },
+        enumerable: true,
+        configurable: true
+    });
     ApiServer.prototype.beforeStart = function () {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                // todo add mandatory stuff CORS etc...
-                // todo logging action
+            var _a, origins, allowHeaders, exposeHeaders, CORS;
+            return __generator(this, function (_b) {
+                this.restify.use(restify.plugins.bodyParser());
+                this.restify.use(restify.plugins.queryParser());
+                if (this.props.cors) {
+                    _a = this.props.cors, origins = _a.origins, allowHeaders = _a.allowHeaders, exposeHeaders = _a.exposeHeaders;
+                    CORS = corsMiddleware({ allowHeaders: allowHeaders, exposeHeaders: exposeHeaders, origins: origins });
+                    this.restify.pre(CORS.preflight);
+                    this.restify.use(CORS.actual);
+                }
                 this.console.d("beforeStart done");
                 return [2 /*return*/];
             });
@@ -74,6 +90,7 @@ var ApiServer = /** @class */ (function () {
     ApiServer.prototype.start = function () {
         return __awaiter(this, void 0, void 0, function () {
             var e_1;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.beforeStart()];
@@ -85,9 +102,15 @@ var ApiServer = /** @class */ (function () {
                         return [4 /*yield*/, this.cryptoHelper.initBase()];
                     case 3:
                         _a.sent();
-                        return [3 /*break*/, 5];
+                        return [2 /*return*/, new Promise(function (resolve) {
+                                _this.console.d("afterStart done");
+                                _this.restify.listen(_this.props.port, function () {
+                                    return resolve();
+                                });
+                            })];
                     case 4:
                         e_1 = _a.sent();
+                        this.console.c("start", new Date(), e_1.message, e_1.stack);
                         return [3 /*break*/, 5];
                     case 5:
                         this.console.d("start done");
@@ -108,10 +131,6 @@ var ApiServer = /** @class */ (function () {
         return new Promise(function (resolve) {
             for (var _i = 0, controllers_1 = controllers; _i < controllers_1.length; _i++) {
                 var ctr = controllers_1[_i];
-                // let name = ctr.name.toLowerCase();
-                // if (name.indexOf("controller") > -1) {
-                //     name = name.substring(0, name.indexOf("controller"));
-                // }
                 _this.console.d("registering", ctr.name);
                 var never = new ctr(_this.restify);
                 _this.console.d("registration", ctr.name, never !== null);
@@ -121,15 +140,9 @@ var ApiServer = /** @class */ (function () {
     };
     ApiServer.prototype.afterStart = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve) {
-                        _this.console.d("afterStart done");
-                        _this.restify.listen(3000, function () {
-                            _this.console.d("server started");
-                            return resolve();
-                        });
-                    })];
+                this.console.d("server started", this.props.domain + ":" + this.props.port);
+                return [2 /*return*/];
             });
         });
     };
@@ -138,10 +151,12 @@ var ApiServer = /** @class */ (function () {
     };
     ApiServer.prototype.stop = function () {
         var _this = this;
+        this.console.w("stopping server was called");
         this.restify.close(function () {
             _this.console.d("server stopped");
         });
     };
+    var ApiServer_1;
     __decorate([
         teys_injector_1.Inject(),
         __metadata("design:type", lib_1.CryptoHelper)
@@ -150,9 +165,9 @@ var ApiServer = /** @class */ (function () {
         teys_injector_1.Inject(),
         __metadata("design:type", lib_1.JwtTokenManager)
     ], ApiServer.prototype, "TokenManager", void 0);
-    ApiServer = __decorate([
+    ApiServer = ApiServer_1 = __decorate([
         teys_injector_1.Injectable(),
-        __metadata("design:paramtypes", [String, String, String, Object, lazy_format_logger_1.LogOptions])
+        __metadata("design:paramtypes", [Object, lazy_format_logger_1.LogOptions])
     ], ApiServer);
     return ApiServer;
 }());

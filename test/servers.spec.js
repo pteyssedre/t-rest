@@ -72,13 +72,13 @@ var RestUserProvider = /** @class */ (function (_super) {
 describe("teys-rest", function () {
     describe("ApiServer", function () {
         var api;
-        describe("Testing pre-register servers", function () {
+        describe("Testing pre-register server with classic server", function () {
             before(function () { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
-                            api = new servers_1.ApiServer("localhost", "api", "1h");
+                            api = new servers_1.ApiServer();
                             return [4 /*yield*/, api.start()];
                         case 1:
                             _a.sent();
@@ -89,7 +89,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should work", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should return success with classic server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -101,7 +101,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should fail authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should fail authentication with classic server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -113,7 +113,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should success authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should success authentication with classic server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var tokenM, jwt, response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -141,17 +141,17 @@ describe("teys-rest", function () {
     });
     describe("SPA Server", function () {
         var spa;
-        describe("Testing pre-register servers", function () {
+        describe("Testing pre-register server  with spa server", function () {
             before(function () { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
                             spa = new servers_1.SpaServer({
-                                filePath: path.join(__dirname, "./"),
                                 proxy: {
                                     "/images": { target: "https://static.lpnt.fr" },
                                 },
+                                public: path.join(__dirname, "./"),
                             });
                             // @ts-ignore
                             return [4 /*yield*/, spa.startWithControllers(default_account_controller_1.DefaultAccountController, default_stats_controller_1.DefaultStatsController)];
@@ -162,7 +162,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should work", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should return success  with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -174,7 +174,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should fail authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should fail authentication  with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -186,7 +186,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should success authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should success authentication  with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var tokenM, jwt, response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -207,7 +207,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should return default index.html", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should return default index.html with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -222,7 +222,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should return data.json", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should return data.json with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -236,7 +236,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should return 404", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should return 404 with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
@@ -248,7 +248,7 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
-            it("Should return images results", function () { return __awaiter(void 0, void 0, void 0, function () {
+            it("Should return images results with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {

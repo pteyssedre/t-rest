@@ -3,16 +3,16 @@ import * as path from "path";
 import * as restify from "restify";
 import {Request, Response} from "restify";
 import {HttpClient} from "../../lib/helpers/http";
-import {SpaServerOptions} from "../SpaServer";
+import {ApiServerOption} from "../api-server";
 
 const mime = require("mime-types");
 
 export class StaticFileController {
 
-    private readonly mainPath: string;
-
-    constructor(server: restify.Server, private props: SpaServerOptions) {
-        this.mainPath = props.filePath;
+    constructor(server: restify.Server, private props: ApiServerOption) {
+        if (!this.props.public) {
+            throw new Error("public path is not set");
+        }
         server.get("/*", (req, res) => {
             try {
                 if (this.props.proxy) {
@@ -37,7 +37,10 @@ export class StaticFileController {
         if (isFile.test(req.path())) {
             p = req.path();
         }
-        const filePath = path.join(this.mainPath, p);
+        if (!this.props.public) {
+            throw new Error("public path is not set");
+        }
+        const filePath = path.join(this.props.public, p);
         if (!fs.existsSync(filePath)) {
             return res.send(404);
         }

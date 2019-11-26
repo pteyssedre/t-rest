@@ -8,7 +8,9 @@ var StaticFileController = /** @class */ (function () {
     function StaticFileController(server, props) {
         var _this = this;
         this.props = props;
-        this.mainPath = props.filePath;
+        if (!this.props.public) {
+            throw new Error("public path is not set");
+        }
         server.get("/*", function (req, res) {
             try {
                 if (_this.props.proxy) {
@@ -33,7 +35,10 @@ var StaticFileController = /** @class */ (function () {
         if (isFile.test(req.path())) {
             p = req.path();
         }
-        var filePath = path.join(this.mainPath, p);
+        if (!this.props.public) {
+            throw new Error("public path is not set");
+        }
+        var filePath = path.join(this.props.public, p);
         if (!fs.existsSync(filePath)) {
             return res.send(404);
         }

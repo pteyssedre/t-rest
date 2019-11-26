@@ -21,7 +21,7 @@ api.start()
 
 ```
 
-By default the server will run on port `3000` but it can be override by passing a `ServerOptions` object
+By default the server will run on port `3000` but it can be override by passing a `ApiServerOptions` object
 By default all `controllers` will be registered under `/api/v1/{controller}`. All controllers must `extends` the `RestController` class in order to be properly register.
 Each controller will have some properties injected via the `teys-injector` such as :
  - logger
@@ -40,7 +40,7 @@ import {MyController1, MyController2} from "./controllers"
 
 
 let spa = new SpaServer({
-    filePath: path.join(__dirname, "public")
+    public: path.join(__dirname, "public")
   });
 spa.startWithControllers(MyController1, MyController2)
     .then(() => console.log('server started'))

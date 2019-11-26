@@ -1,7 +1,6 @@
 "use strict";
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./SpaServer"));
-__export(require("./api-server"));
+var api_server_1 = require("./api-server");
+exports.ApiServer = api_server_1.ApiServer;
+var spa_server_1 = require("./spa-server");
+exports.SpaServer = spa_server_1.SpaServer;

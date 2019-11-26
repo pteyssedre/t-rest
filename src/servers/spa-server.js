@@ -49,21 +49,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var teys_injector_1 = require("teys-injector");
 var api_server_1 = require("./api-server");
 var static_file_controller_1 = require("./controllers/static-file-controller");
 var SpaServer = /** @class */ (function (_super) {
     __extends(SpaServer, _super);
     function SpaServer(props, logs) {
         var _this = this;
-        if (!props.filePath) {
-            throw new Error("must provide filePath for SPA server");
+        if (!props.public) {
+            throw new Error("must provide public path for SPA server");
         }
-        props.domain = props.domain ? props.domain : "localhost";
-        props.version = props.version ? props.version : "v1";
-        props.authTime = props.authTime ? props.authTime : "1h";
-        _this = _super.call(this, props.domain, props.version, props.authTime, props, logs) || this;
-        _this.props = props;
+        _this = _super.call(this, props, logs) || this;
         return _this;
     }
     SpaServer.prototype.beforeStart = function () {
@@ -73,7 +68,6 @@ var SpaServer = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, _super.prototype.beforeStart.call(this)];
                     case 1:
                         _a.sent();
-                        teys_injector_1.Injector.Register("api-route", "api");
                         return [2 /*return*/];
                 }
             });

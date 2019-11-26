@@ -1,2 +1,3 @@
-export * from "./SpaServer";
-export * from "./api-server";
+import {ApiServer} from "./api-server";
+import {SpaServer} from "./spa-server";
+export {ApiServer, SpaServer};

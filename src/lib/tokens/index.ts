@@ -1,1 +1,1 @@
-export * from "./jwt-token-manager";
+export {JwtTokenManager} from "./jwt-token-manager";

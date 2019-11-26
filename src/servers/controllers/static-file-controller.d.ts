@@ -1,10 +1,9 @@
 import * as restify from "restify";
 import { Request, Response } from "restify";
-import { SpaServerOptions } from "../SpaServer";
+import { ApiServerOption } from "../api-server";
 export declare class StaticFileController {
     private props;
-    private readonly mainPath;
-    constructor(server: restify.Server, props: SpaServerOptions);
+    constructor(server: restify.Server, props: ApiServerOption);
     matchFile(req: Request, res: Response): any;
     private proxify;
 }

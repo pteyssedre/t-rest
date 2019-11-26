@@ -1,5 +1,5 @@
 import {Injector} from "teys-injector";
-import {JwtTokenManager} from "../tokens/jwt-token-manager";
+import {JwtTokenManager} from "../tokens";
 import {RestUserProvider} from "./providers";
 import {RestController, UserRole} from "./rest-controller";
 

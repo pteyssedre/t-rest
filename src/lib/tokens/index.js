@@ -1,6 +1,4 @@
 "use strict";
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./jwt-token-manager"));
+var jwt_token_manager_1 = require("./jwt-token-manager");
+exports.JwtTokenManager = jwt_token_manager_1.JwtTokenManager;

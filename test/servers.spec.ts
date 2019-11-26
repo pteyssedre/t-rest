@@ -21,26 +21,26 @@ describe("teys-rest", () => {
     describe("ApiServer", () => {
 
         let api: ApiServer;
-        describe("Testing pre-register servers", () => {
+        describe("Testing pre-register server with classic server", () => {
             before(async () => {
                 Injector.Register("_class_restuserprovider", new RestUserProvider());
-                api = new ApiServer("localhost", "api", "1h");
+                api = new ApiServer();
                 await api.start();
                 await api.registerControllers(DefaultAccountController, DefaultStatsController);
             });
 
-            it("Should work", async () => {
+            it("Should return success with classic server", async () => {
                 const response = await axios.default.get("http://localhost:3000/api/v1/stats/echo");
                 assert(response.status === 200, "not working");
             });
 
-            it("Should fail authentication", async () => {
+            it("Should fail authentication with classic server", async () => {
                 const response = await axios.default.get("http://localhost:3000/api/v1/stats/user",
                     {validateStatus: () => true});
                 assert(response.status === 401, "not working");
             });
 
-            it("Should success authentication", async () => {
+            it("Should success authentication with classic server", async () => {
                 const tokenM = Injector.Resolve("_class_jwttokenmanager");
                 if (!tokenM) {
                     return;
@@ -62,31 +62,31 @@ describe("teys-rest", () => {
     describe("SPA Server", () => {
 
         let spa: SpaServer;
-        describe("Testing pre-register servers", () => {
+        describe("Testing pre-register server  with spa server", () => {
             before(async () => {
                 Injector.Register("_class_restuserprovider", new RestUserProvider());
                 spa = new SpaServer({
-                    filePath: path.join(__dirname, "./"),
                     proxy: {
                         "/images": {target: "https://static.lpnt.fr"},
                     },
+                    public: path.join(__dirname, "./"),
                 });
                 // @ts-ignore
                 await spa.startWithControllers(DefaultAccountController, DefaultStatsController);
             });
 
-            it("Should work", async () => {
+            it("Should return success  with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/api/v1/stats/echo");
                 assert(response.status === 200, "not working");
             });
 
-            it("Should fail authentication", async () => {
+            it("Should fail authentication  with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/api/v1/stats/user",
                     {validateStatus: () => true});
                 assert(response.status === 401, "not working");
             });
 
-            it("Should success authentication", async () => {
+            it("Should success authentication  with spa server", async () => {
                 const tokenM = Injector.Resolve("_class_jwttokenmanager");
                 if (!tokenM) {
                     return;
@@ -99,7 +99,7 @@ describe("teys-rest", () => {
                 assert(response.data.user.userId === "1234");
             });
 
-            it("Should return default index.html", async () => {
+            it("Should return default index.html with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
@@ -108,7 +108,7 @@ describe("teys-rest", () => {
                     `<title>Title</title></head><body></body></html>\r\n`, "not index page");
             });
 
-            it("Should return data.json", async () => {
+            it("Should return data.json with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/data.json",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
@@ -116,13 +116,13 @@ describe("teys-rest", () => {
                 assert(JSON.stringify(response.data) === JSON.stringify({data: 1}), "not data file");
             });
 
-            it("Should return 404", async () => {
+            it("Should return 404 with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/data2.json",
                     {validateStatus: () => true});
                 assert(response.status === 404, "not working");
             });
 
-            it("Should return images results", async () => {
+            it("Should return images results with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
@@ -133,6 +133,5 @@ describe("teys-rest", () => {
                 spa.stop();
             });
         });
-
     });
 });
