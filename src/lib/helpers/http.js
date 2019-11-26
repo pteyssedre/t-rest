@@ -53,13 +53,16 @@ var HttpClient = /** @class */ (function () {
             opt.method = "GET";
             Object.assign(options, opt);
             var req = HttpClient.deferrer(uri)(opt, function (res) {
+                if (options.raw) {
+                    return resolve(res);
+                }
                 if (res.headers["content-type"]) {
                     var contentType = res.headers["content-type"];
                     switch (contentType) {
                         case "image/png":
                         case "image/jpg":
                         case "image/jpeg":
-                            var baseTmp = options.tempFile ? options.tempFile : path.join(__dirname, "../tmp");
+                            var baseTmp = options.tmpFolder ? options.tmpFolder : path.join(__dirname, "../tmp");
                             if (!fs.existsSync(baseTmp)) {
                                 fs.mkdirSync(baseTmp);
                             }

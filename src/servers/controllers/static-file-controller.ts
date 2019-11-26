@@ -55,10 +55,10 @@ export class StaticFileController {
     private proxify(proxyElement: { target: string }, req: Request, res: Response) {
         const q = req.getQuery();
         const uri = `${proxyElement.target}${req.path()}${q ? `?${q}` : ""}`;
-        return HttpClient.get(uri)
+        return HttpClient.get(uri, {raw: true})
             .then((response) => {
                 res.writeHead(Number(response.statusCode), response.headers);
-                response.file.pipe(res);
+                return response.pipe(res);
             }).catch((error) => {
                 return res.send(500, error.message);
             });

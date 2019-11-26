@@ -10,12 +10,15 @@ export declare class HttpResponse extends IncomingMessage {
 export interface HttpRequest extends UrlWithStringQuery {
     method?: string;
     headers?: any;
+    tmpFolder?: string;
+    raw?: boolean;
 }
 export interface HttpOptionsRequest {
     headers?: {
         [key: string]: string;
     };
-    tempFile?: string;
+    tmpFolder?: string;
+    raw?: boolean;
 }
 export declare enum HttpTypeRequest {
     JSON = "application/json",

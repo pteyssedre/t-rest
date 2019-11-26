@@ -13,6 +13,7 @@ function clean() {
     return src(
         [
             "src/**/*.js",
+            "src/lib/tmp/*",
             "src/**/*.d.ts",
             "dist/**/*.js",
             "dist/**/*.d.ts",

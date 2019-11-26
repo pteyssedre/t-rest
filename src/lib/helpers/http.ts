@@ -21,11 +21,14 @@ export class HttpResponse extends IncomingMessage {
 export interface HttpRequest extends UrlWithStringQuery {
     method?: string;
     headers?: any;
+    tmpFolder?: string;
+    raw?: boolean;
 }
 
 export interface HttpOptionsRequest {
     headers?: { [key: string]: string };
-    tempFile?: string;
+    tmpFolder?: string;
+    raw?: boolean;
 }
 
 export enum HttpTypeRequest {
@@ -43,13 +46,16 @@ export class HttpClient {
             opt.method = "GET";
             Object.assign(options, opt);
             const req = HttpClient.deferrer(uri)(opt, (res) => {
+                if (options.raw) {
+                    return resolve(res as HttpResponse);
+                }
                 if (res.headers["content-type"]) {
                     const contentType = res.headers["content-type"];
                     switch (contentType) {
                         case "image/png":
                         case "image/jpg":
                         case "image/jpeg":
-                            const baseTmp = options.tempFile ? options.tempFile : path.join(__dirname, "../tmp");
+                            const baseTmp = options.tmpFolder ? options.tmpFolder : path.join(__dirname, "../tmp");
                             if (!fs.existsSync(baseTmp)) {
                                 fs.mkdirSync(baseTmp);
                             }
@@ -83,7 +89,6 @@ export class HttpClient {
                             break;
                     }
                 }
-
             });
             req.end();
         });
