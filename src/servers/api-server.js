@@ -48,13 +48,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var lazy_format_logger_1 = require("lazy-format-logger");
 var restify = require("restify");
 var teys_injector_1 = require("teys-injector");
-var index_1 = require("../lib/index");
+var lib_1 = require("../lib");
 var ApiServer = /** @class */ (function () {
-    function ApiServer(domain, version, authTime, props, logs) {
+    function ApiServer(domain, apiPath, authTime, props, logs) {
         this.logOptions = logs ? logs : new lazy_format_logger_1.LogOptions();
         teys_injector_1.Injector.Register("log-config", this.logOptions);
         teys_injector_1.Injector.Register("token-domain", domain);
-        teys_injector_1.Injector.Register("api-version", version);
+        teys_injector_1.Injector.Register("api-route", apiPath);
         teys_injector_1.Injector.Register("token-duration", authTime);
         this.console = new lazy_format_logger_1.Logger(this.logOptions, "ApiServer");
         this.restify = restify.createServer(props);
@@ -100,29 +100,36 @@ var ApiServer = /** @class */ (function () {
         });
     };
     ApiServer.prototype.registerControllers = function () {
+        var _this = this;
         var controllers = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             controllers[_i] = arguments[_i];
         }
-        for (var _a = 0, controllers_1 = controllers; _a < controllers_1.length; _a++) {
-            var ctr = controllers_1[_a];
-            var name = ctr.name.toLowerCase();
-            if (name.indexOf("controller") > -1) {
-                name = name.substring(0, name.indexOf("controller"));
+        return new Promise(function (resolve) {
+            for (var _i = 0, controllers_1 = controllers; _i < controllers_1.length; _i++) {
+                var ctr = controllers_1[_i];
+                // let name = ctr.name.toLowerCase();
+                // if (name.indexOf("controller") > -1) {
+                //     name = name.substring(0, name.indexOf("controller"));
+                // }
+                _this.console.d("registering", ctr.name);
+                var never = new ctr(_this.restify);
+                _this.console.d("registration", ctr.name, never !== null);
             }
-            var never = new ctr(this.restify);
-        }
+            return resolve();
+        });
     };
     ApiServer.prototype.afterStart = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                // todo logging action
-                this.console.d("afterStart done");
-                this.restify.listen(3000, function () {
-                    _this.console.d("server started");
-                });
-                return [2 /*return*/];
+                return [2 /*return*/, new Promise(function (resolve) {
+                        _this.console.d("afterStart done");
+                        _this.restify.listen(3000, function () {
+                            _this.console.d("server started");
+                            return resolve();
+                        });
+                    })];
             });
         });
     };
@@ -137,11 +144,11 @@ var ApiServer = /** @class */ (function () {
     };
     __decorate([
         teys_injector_1.Inject(),
-        __metadata("design:type", index_1.CryptoHelper)
+        __metadata("design:type", lib_1.CryptoHelper)
     ], ApiServer.prototype, "cryptoHelper", void 0);
     __decorate([
         teys_injector_1.Inject(),
-        __metadata("design:type", index_1.JwtTokenManager)
+        __metadata("design:type", lib_1.JwtTokenManager)
     ], ApiServer.prototype, "TokenManager", void 0);
     ApiServer = __decorate([
         teys_injector_1.Injectable(),

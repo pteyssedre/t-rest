@@ -91,7 +91,9 @@ var SpaServer = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, _super.prototype.start.call(this)];
                     case 1:
                         _a.sent();
-                        _super.prototype.registerControllers.apply(this, controllers);
+                        return [4 /*yield*/, _super.prototype.registerControllers.apply(this, controllers)];
+                    case 2:
+                        _a.sent();
                         fileController = new static_file_controller_1.StaticFileController(this.restify, this.props);
                         return [2 /*return*/];
                 }

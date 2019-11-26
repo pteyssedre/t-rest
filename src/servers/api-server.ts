@@ -2,7 +2,7 @@ import {Logger, LogLevel, LogOptions} from "lazy-format-logger";
 import * as restify from "restify";
 import {ServerOptions} from "restify";
 import {Inject, Injectable, Injector} from "teys-injector";
-import {CryptoHelper, JwtTokenManager, RestController} from "../lib/index";
+import {CryptoHelper, JwtTokenManager, RestController} from "../lib";
 
 @Injectable()
 export class ApiServer {
@@ -15,11 +15,11 @@ export class ApiServer {
     private readonly logOptions: LogOptions;
     private readonly console: Logger;
 
-    constructor(domain: string, version: string, authTime: string, props?: ServerOptions, logs?: LogOptions) {
+    constructor(domain: string, apiPath: string, authTime: string, props?: ServerOptions, logs?: LogOptions) {
         this.logOptions = logs ? logs : new LogOptions();
         Injector.Register("log-config", this.logOptions);
         Injector.Register("token-domain", domain);
-        Injector.Register("api-version", version);
+        Injector.Register("api-route", apiPath);
         Injector.Register("token-duration", authTime);
         this.console = new Logger(this.logOptions, "ApiServer");
         this.restify = restify.createServer(props);
@@ -45,21 +45,29 @@ export class ApiServer {
         await this.afterStart();
     }
 
-    registerControllers<T extends RestController>(...controllers: Array<new(server: any) => T>) {
-        for (const ctr of controllers) {
-            let name = ctr.name.toLowerCase();
-            if (name.indexOf("controller") > -1) {
-                name = name.substring(0, name.indexOf("controller"));
+    registerControllers(...controllers: Array<new(server: any) => RestController>): Promise<void> {
+        return new Promise<void>((resolve) => {
+            for (const ctr of controllers) {
+                // let name = ctr.name.toLowerCase();
+                // if (name.indexOf("controller") > -1) {
+                //     name = name.substring(0, name.indexOf("controller"));
+                // }
+                this.console.d("registering", ctr.name);
+                const never = new ctr(this.restify);
+                this.console.d("registration", ctr.name, never !== null);
+
             }
-            const never = new ctr(this.restify);
-        }
+            return resolve();
+        });
     }
 
     async afterStart(): Promise<void> {
-        // todo logging action
-        this.console.d("afterStart done");
-        this.restify.listen(3000, () => {
-            this.console.d("server started");
+        return new Promise<void>((resolve) => {
+            this.console.d("afterStart done");
+            this.restify.listen(3000, () => {
+                this.console.d("server started");
+                return resolve();
+            });
         });
     }
 

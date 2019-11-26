@@ -63,6 +63,7 @@ var lib_1 = require("../../lib");
 var DefaultAccountController = /** @class */ (function (_super) {
     __extends(DefaultAccountController, _super);
     function DefaultAccountController(server, version) {
+        if (version === void 0) { version = "v1"; }
         return _super.call(this, server, "account", version) || this;
     }
     DefaultAccountController.prototype.login = function (req, res) {

@@ -16,9 +16,9 @@ export class StaticFileController {
         server.get("/*", (req, res) => {
             try {
                 if (this.props.proxy) {
-                    const datas = Object.keys(this.props.proxy);
+                    const data = Object.keys(this.props.proxy);
                     const p = req.path();
-                    const match = datas.filter((e: string) => p.indexOf(e) === 0).shift();
+                    const match = data.filter((e: string) => p.indexOf(e) === 0).shift();
                     if (match) {
                         return this.proxify(this.props.proxy[match], req, res);
                     }

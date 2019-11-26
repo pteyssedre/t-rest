@@ -54,9 +54,9 @@ var path = require("path");
 var teys_injector_1 = require("teys-injector");
 var base_1 = require("../src/lib/base");
 var providers_1 = require("../src/lib/base/providers");
+var servers_1 = require("../src/servers");
 var default_account_controller_1 = require("../src/servers/controllers/default-account-controller");
 var default_stats_controller_1 = require("../src/servers/controllers/default-stats-controller");
-var SpaServer_1 = require("../src/servers/SpaServer");
 var axios = require("axios");
 var assert = chai.assert;
 var RestUserProvider = /** @class */ (function (_super) {
@@ -69,131 +69,201 @@ var RestUserProvider = /** @class */ (function (_super) {
     };
     return RestUserProvider;
 }(providers_1.RestUserProvider));
-var spa;
-describe("Testing pre-register servers", function () {
-    before(function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
-                    spa = new SpaServer_1.SpaServer({
-                        filePath: path.join(__dirname, "./"),
-                        proxy: {
-                            "/images": { target: "https://static.lpnt.fr" },
-                        },
-                    });
-                    // @ts-ignore
-                    return [4 /*yield*/, spa.startWithControllers(default_account_controller_1.DefaultAccountController, default_stats_controller_1.DefaultStatsController)];
-                case 1:
-                    // @ts-ignore
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("Should work", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/echo")];
-                case 1:
-                    response = _a.sent();
-                    assert(response.status === 200, "not working");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("Should fail authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/user", { validateStatus: function () { return true; } })];
-                case 1:
-                    response = _a.sent();
-                    assert(response.status === 401, "not working");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("Should success authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var tokenM, jwt, response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    tokenM = teys_injector_1.Injector.Resolve("_class_jwttokenmanager");
-                    if (!tokenM) {
-                        return [2 /*return*/];
+describe("teys-rest", function () {
+    describe("ApiServer", function () {
+        var api;
+        describe("Testing pre-register servers", function () {
+            before(function () { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
+                            api = new servers_1.ApiServer("localhost", "api", "1h");
+                            return [4 /*yield*/, api.start()];
+                        case 1:
+                            _a.sent();
+                            return [4 /*yield*/, api.registerControllers(default_account_controller_1.DefaultAccountController, default_stats_controller_1.DefaultStatsController)];
+                        case 2:
+                            _a.sent();
+                            return [2 /*return*/];
                     }
-                    return [4 /*yield*/, tokenM.createAuthenticationToken("1234", base_1.UserRole.Admin)];
-                case 1:
-                    jwt = _a.sent();
-                    return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/user", { headers: { authorization: "Bearer " + jwt }, validateStatus: function () { return true; } })];
-                case 2:
-                    response = _a.sent();
-                    assert(response.status === 200);
-                    assert(response.data.user.userId === "1234");
-                    return [2 /*return*/];
-            }
+                });
+            }); });
+            it("Should work", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/echo")];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should fail authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/user", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 401, "not working");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should success authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var tokenM, jwt, response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            tokenM = teys_injector_1.Injector.Resolve("_class_jwttokenmanager");
+                            if (!tokenM) {
+                                return [2 /*return*/];
+                            }
+                            return [4 /*yield*/, tokenM.createAuthenticationToken("1234", base_1.UserRole.Admin)];
+                        case 1:
+                            jwt = _a.sent();
+                            return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/user", { headers: { authorization: "Bearer " + jwt }, validateStatus: function () { return true; } })];
+                        case 2:
+                            response = _a.sent();
+                            assert(response.status === 200);
+                            assert(response.data.user.userId === "1234");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            after(function () {
+                api.stop();
+            });
         });
-    }); });
-    it("Should return default index.html", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/", { validateStatus: function () { return true; } })];
-                case 1:
-                    response = _a.sent();
-                    assert(response.status === 200, "not working");
-                    assert(response.headers["content-type"] === "text/html", "not html file");
-                    assert(response.data === "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">" +
-                        "<title>Title</title></head><body></body></html>\r\n", "not index page");
-                    return [2 /*return*/];
-            }
+    });
+    describe("SPA Server", function () {
+        var spa;
+        describe("Testing pre-register servers", function () {
+            before(function () { return __awaiter(void 0, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            teys_injector_1.Injector.Register("_class_restuserprovider", new RestUserProvider());
+                            spa = new servers_1.SpaServer({
+                                filePath: path.join(__dirname, "./"),
+                                proxy: {
+                                    "/images": { target: "https://static.lpnt.fr" },
+                                },
+                            });
+                            // @ts-ignore
+                            return [4 /*yield*/, spa.startWithControllers(default_account_controller_1.DefaultAccountController, default_stats_controller_1.DefaultStatsController)];
+                        case 1:
+                            // @ts-ignore
+                            _a.sent();
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should work", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/echo")];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should fail authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/user", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 401, "not working");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should success authentication", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var tokenM, jwt, response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            tokenM = teys_injector_1.Injector.Resolve("_class_jwttokenmanager");
+                            if (!tokenM) {
+                                return [2 /*return*/];
+                            }
+                            return [4 /*yield*/, tokenM.createAuthenticationToken("1234", base_1.UserRole.Admin)];
+                        case 1:
+                            jwt = _a.sent();
+                            return [4 /*yield*/, axios.default.get("http://localhost:3000/api/v1/stats/user", { headers: { authorization: "Bearer " + jwt }, validateStatus: function () { return true; } })];
+                        case 2:
+                            response = _a.sent();
+                            assert(response.status === 200);
+                            assert(response.data.user.userId === "1234");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should return default index.html", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            assert(response.headers["content-type"] === "text/html", "not html file");
+                            assert(response.data === "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\">" +
+                                "<title>Title</title></head><body></body></html>\r\n", "not index page");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should return data.json", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/data.json", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            assert(response.headers["content-type"] === "application/json", "not json file");
+                            assert(JSON.stringify(response.data) === JSON.stringify({ data: 1 }), "not data file");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should return 404", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/data2.json", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 404, "not working");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should return images results", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            assert(response.headers["content-type"].indexOf("image/jpeg") > -1, "not html");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            after(function () {
+                spa.stop();
+            });
         });
-    }); });
-    it("Should return data.json", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/data.json", { validateStatus: function () { return true; } })];
-                case 1:
-                    response = _a.sent();
-                    assert(response.status === 200, "not working");
-                    assert(response.headers["content-type"] === "application/json", "not json file");
-                    assert(JSON.stringify(response.data) === JSON.stringify({ data: 1 }), "not data file");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("Should return 404", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/data2.json", { validateStatus: function () { return true; } })];
-                case 1:
-                    response = _a.sent();
-                    assert(response.status === 404, "not working");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    it("Should return images results", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg", { validateStatus: function () { return true; } })];
-                case 1:
-                    response = _a.sent();
-                    assert(response.status === 200, "not working");
-                    assert(response.headers["content-type"].indexOf("image/jpeg") > -1, "not html");
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    after(function () { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            spa.stop();
-            return [2 /*return*/];
-        });
-    }); });
+    });
 });

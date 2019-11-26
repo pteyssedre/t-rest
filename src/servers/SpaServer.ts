@@ -1,7 +1,7 @@
 import {LogOptions} from "lazy-format-logger";
 import {ServerOptions} from "restify";
 import {Injector} from "teys-injector";
-import {RestController} from "../lib/base";
+import {RestController} from "../lib";
 import {ApiServer} from "./api-server";
 import {StaticFileController} from "./controllers/static-file-controller";
 
@@ -34,10 +34,10 @@ export class SpaServer extends ApiServer {
         Injector.Register("api-route", "api");
     }
 
-    async startWithControllers<T extends RestController>(...controllers: Array<new(server: any) => T>):
+    async startWithControllers(...controllers: Array<new(server: any) => RestController>):
         Promise<void> {
         await super.start();
-        super.registerControllers(...controllers);
+        await super.registerControllers(...controllers);
         const fileController = new StaticFileController(this.restify, this.props);
     }
 

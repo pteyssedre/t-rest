@@ -22,7 +22,7 @@ export class DefaultAccountController extends RestController {
     @Inject("_class_tokenprovider")
     private readonly tokenProvider: TokenProvider;
 
-    constructor(server: restify.Server, version: string) {
+    constructor(server: restify.Server, version: string = "v1") {
         super(server, "account", version);
     }
 

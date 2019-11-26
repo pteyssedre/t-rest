@@ -12,9 +12,9 @@ var StaticFileController = /** @class */ (function () {
         server.get("/*", function (req, res) {
             try {
                 if (_this.props.proxy) {
-                    var datas = Object.keys(_this.props.proxy);
+                    var data = Object.keys(_this.props.proxy);
                     var p_1 = req.path();
-                    var match = datas.filter(function (e) { return p_1.indexOf(e) === 0; }).shift();
+                    var match = data.filter(function (e) { return p_1.indexOf(e) === 0; }).shift();
                     if (match) {
                         return _this.proxify(_this.props.proxy[match], req, res);
                     }
