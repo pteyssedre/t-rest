@@ -5,7 +5,6 @@ import {Inject, Injectable} from "teys-injector";
 import {UserRole} from "../base";
 import {CryptoHelper} from "../helpers";
 import {Token} from "../models";
-
 import moment = require("moment");
 
 @Injectable()

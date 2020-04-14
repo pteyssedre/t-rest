@@ -1,5 +1,5 @@
-import {Request, Response} from "restify";
 import * as restify from "restify";
+import {Request, Response} from "restify";
 import {Authorize, AuthorizedRequest, Get, ok, RestController} from "../../lib/base";
 
 export class DefaultStatsController extends RestController {

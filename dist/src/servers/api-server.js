@@ -47,9 +47,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var lazy_format_logger_1 = require("lazy-format-logger");
 var restify = require("restify");
-var corsMiddleware = require("restify-cors-middleware");
 var teys_injector_1 = require("teys-injector");
 var lib_1 = require("../lib");
+var corsMiddleware = require("restify-cors-middleware");
 var ApiServer = /** @class */ (function () {
     function ApiServer(props, logs) {
         props = Object.assign(ApiServer_1.defaultConfig, props || {});

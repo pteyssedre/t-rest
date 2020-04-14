@@ -1,9 +1,11 @@
 import {Logger, LogLevel, LogOptions} from "lazy-format-logger";
 import * as restify from "restify";
 import {ServerOptions} from "restify";
-import * as corsMiddleware from "restify-cors-middleware";
+import {Options} from "restify-cors-middleware";
 import {Inject, Injectable, Injector} from "teys-injector";
 import {CryptoHelper, JwtTokenManager, RestController} from "../lib";
+
+const corsMiddleware = require("restify-cors-middleware");
 
 export interface ApiServerOption extends ServerOptions {
     domain?: string;
@@ -14,7 +16,7 @@ export interface ApiServerOption extends ServerOptions {
     proxy?: { [key: string]: { target: string } };
     public?: string;
     version?: string;
-    cors?: corsMiddleware.Options;
+    cors?: Options;
 }
 
 @Injectable()

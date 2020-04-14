@@ -1,7 +1,7 @@
 import { LogLevel, LogOptions } from "lazy-format-logger";
 import * as restify from "restify";
 import { ServerOptions } from "restify";
-import * as corsMiddleware from "restify-cors-middleware";
+import { Options } from "restify-cors-middleware";
 import { RestController } from "../lib";
 export interface ApiServerOption extends ServerOptions {
     domain?: string;
@@ -16,7 +16,7 @@ export interface ApiServerOption extends ServerOptions {
     };
     public?: string;
     version?: string;
-    cors?: corsMiddleware.Options;
+    cors?: Options;
 }
 export declare class ApiServer {
     private static get defaultConfig();
