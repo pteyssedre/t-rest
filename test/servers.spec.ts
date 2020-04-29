@@ -53,6 +53,31 @@ describe("teys-rest", () => {
                 assert(response.data.user.userId === "1234");
             });
 
+            it("Should validate the body parser", async () => {
+                const tokenM = Injector.Resolve("_class_jwttokenmanager");
+                if (!tokenM) {
+                    return;
+                }
+                const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
+
+                const response = await axios.default.post("http://localhost:3000/api/v1/stats/user", { post: "is the best"},
+                    {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
+                assert(response.status === 200);
+                assert(response.data.post === "is the best");
+            });
+            it("Should validate the 500 error return", async () => {
+                const tokenM = Injector.Resolve("_class_jwttokenmanager");
+                if (!tokenM) {
+                    return;
+                }
+                const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
+
+                const response = await axios.default.post("http://localhost:3000/api/v1/stats/500", { post: "is the best"},
+                    {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
+                assert(response.status === 500);
+                assert(response.data.details === "automatic error validation");
+            });
+
             after(() => {
                 api.stop();
             });

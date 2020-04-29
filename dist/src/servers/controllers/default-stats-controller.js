@@ -78,6 +78,20 @@ var DefaultStatsController = /** @class */ (function (_super) {
             });
         });
     };
+    DefaultStatsController.prototype.testPost = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, base_1.ok(res, req.body)];
+            });
+        });
+    };
+    DefaultStatsController.prototype.testErrorPost = function (req, res) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                throw new Error("automatic error validation");
+            });
+        });
+    };
     __decorate([
         base_1.Get("echo"),
         __metadata("design:type", Function),
@@ -91,6 +105,20 @@ var DefaultStatsController = /** @class */ (function (_super) {
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", Promise)
     ], DefaultStatsController.prototype, "testAuth", null);
+    __decorate([
+        base_1.Post("user"),
+        base_1.Authorize(),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], DefaultStatsController.prototype, "testPost", null);
+    __decorate([
+        base_1.Post("500"),
+        base_1.Authorize(),
+        __metadata("design:type", Function),
+        __metadata("design:paramtypes", [Object, Object]),
+        __metadata("design:returntype", Promise)
+    ], DefaultStatsController.prototype, "testErrorPost", null);
     return DefaultStatsController;
 }(base_1.RestController));
 exports.DefaultStatsController = DefaultStatsController;

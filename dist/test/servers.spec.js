@@ -134,6 +134,48 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
+            it("Should validate the body parser", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var tokenM, jwt, response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            tokenM = teys_injector_1.Injector.Resolve("_class_jwttokenmanager");
+                            if (!tokenM) {
+                                return [2 /*return*/];
+                            }
+                            return [4 /*yield*/, tokenM.createAuthenticationToken("1234", base_1.UserRole.Admin)];
+                        case 1:
+                            jwt = _a.sent();
+                            return [4 /*yield*/, axios.default.post("http://localhost:3000/api/v1/stats/user", { post: "is the best" }, { headers: { authorization: "Bearer " + jwt }, validateStatus: function () { return true; } })];
+                        case 2:
+                            response = _a.sent();
+                            assert(response.status === 200);
+                            assert(response.data.post === "is the best");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should validate the 500 error return", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var tokenM, jwt, response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            tokenM = teys_injector_1.Injector.Resolve("_class_jwttokenmanager");
+                            if (!tokenM) {
+                                return [2 /*return*/];
+                            }
+                            return [4 /*yield*/, tokenM.createAuthenticationToken("1234", base_1.UserRole.Admin)];
+                        case 1:
+                            jwt = _a.sent();
+                            return [4 /*yield*/, axios.default.post("http://localhost:3000/api/v1/stats/500", { post: "is the best" }, { headers: { authorization: "Bearer " + jwt }, validateStatus: function () { return true; } })];
+                        case 2:
+                            response = _a.sent();
+                            assert(response.status === 500);
+                            assert(response.data.details === "automatic error validation");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
             after(function () {
                 api.stop();
             });

@@ -5,4 +5,6 @@ export declare class DefaultStatsController extends RestController {
     constructor(server: restify.Server);
     testEcho(req: Request, res: Response): Promise<any>;
     testAuth(req: AuthorizedRequest, res: Response): Promise<any>;
+    testPost(req: AuthorizedRequest, res: Response): Promise<any>;
+    testErrorPost(req: AuthorizedRequest, res: Response): Promise<void>;
 }
