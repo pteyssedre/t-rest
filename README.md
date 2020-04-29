@@ -45,3 +45,15 @@ let spa = new SpaServer({
 spa.startWithControllers(MyController1, MyController2)
     .then(() => console.log('server started'))
 ```
+
+### Options
+You can now specify the list of extensions of files that you want to expose
+
+```typescript
+let spa = new SpaServer({
+    public: path.join(__dirname, "public"),
+    extensionsAllowed: ["png", "jpeg", "html", "js"]
+  });
+```
+If a list is provided via the property `extensionsAllowed` it will override the default list of extensions. So only those declared inside the array will be available.  
+The default value is : `["css", "html", "js", "png", "svg", "ico", "jpeg", "jpg", "woff", "woff2", "ttf"]`

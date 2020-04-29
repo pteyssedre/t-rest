@@ -8,6 +8,7 @@ export interface ApiServerOption extends ServerOptions {
     port?: number;
     apiRoute?: string;
     authTime?: string;
+    extensionsAllowed?: string[];
     defaultFile?: string;
     proxy?: {
         [key: string]: {

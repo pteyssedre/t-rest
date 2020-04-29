@@ -30,7 +30,17 @@ var StaticFileController = /** @class */ (function () {
         });
     }
     StaticFileController.prototype.matchFile = function (req, res) {
-        var isFile = new RegExp("/.*\\.css|.*\\.html|.*\\.js|.*\\.png|.*\\.ico|.*\\.jpeg|.*\\.jpg|.*\\.woff|.*\\.woff2|.*\\.ttf/");
+        var strPattern = "/.*\\.css|.*\\.html|.*\\.js|.*\\.png|.*\\.svg|.*\\.ico|.*\\.jpeg|.*\\.jpg|.*\\.woff|.*\\.woff2|.*\\.ttf/";
+        if (this.props.extensionsAllowed) {
+            strPattern = "";
+            for (var _i = 0, _a = this.props.extensionsAllowed; _i < _a.length; _i++) {
+                var ext = _a[_i];
+                if (strPattern.indexOf(ext) === -1) {
+                    strPattern += "|.\\." + ext;
+                }
+            }
+        }
+        var isFile = new RegExp(strPattern);
         var p = this.props.defaultFile ? this.props.defaultFile : "index.html";
         if (isFile.test(req.path())) {
             p = req.path();

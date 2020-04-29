@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Typescript REST server based on restify",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

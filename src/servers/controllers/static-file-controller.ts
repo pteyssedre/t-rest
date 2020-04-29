@@ -32,7 +32,16 @@ export class StaticFileController {
     }
 
     matchFile(req: Request, res: Response) {
-        const isFile = new RegExp("/.*\\.css|.*\\.html|.*\\.js|.*\\.png|.*\\.ico|.*\\.jpeg|.*\\.jpg|.*\\.woff|.*\\.woff2|.*\\.ttf/");
+        let strPattern = "/.*\\.css|.*\\.html|.*\\.js|.*\\.png|.*\\.svg|.*\\.ico|.*\\.jpeg|.*\\.jpg|.*\\.woff|.*\\.woff2|.*\\.ttf/";
+        if (this.props.extensionsAllowed) {
+            strPattern = "";
+            for (const ext of this.props.extensionsAllowed) {
+                if (strPattern.indexOf(ext) === -1) {
+                    strPattern += `|.\\.${ext}`;
+                }
+            }
+        }
+        const isFile = new RegExp(strPattern);
         let p = this.props.defaultFile ? this.props.defaultFile : "index.html";
         if (isFile.test(req.path())) {
             p = req.path();
