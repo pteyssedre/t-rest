@@ -45,7 +45,7 @@ export abstract class RestController {
                 try {
                     await this.promiseHandler(prom, req, res, next);
                 } catch (exception) {
-                    console.error(exception);
+                    this.console.e(exception.code, exception.message);
                     return res.send(500, {error: "internal errors", details: exception.message});
                 }
             });
@@ -56,7 +56,12 @@ export abstract class RestController {
         this.console.d(`register GET method`, p);
         this.server.get(p,
             async (req: Request, res: Response, next: Next) => {
-                await this.promiseHandler(prom, req, res, next);
+                try {
+                    await this.promiseHandler(prom, req, res, next);
+                } catch (exception) {
+                    this.console.e(exception.code, exception.message);
+                    return res.send(500, {error: "internal errors", details: exception.message});
+                }
             });
     }
 
@@ -65,7 +70,12 @@ export abstract class RestController {
         this.console.d(`register PATCH method`, p);
         this.server.patch(p,
             async (req: Request, res: Response, next: Next) => {
-                await this.promiseHandler(prom, req, res, next);
+                try {
+                    await this.promiseHandler(prom, req, res, next);
+                } catch (exception) {
+                    this.console.e(exception.code, exception.message);
+                    return res.send(500, {error: "internal errors", details: exception.message});
+                }
             });
     }
 
@@ -74,7 +84,12 @@ export abstract class RestController {
         this.console.d(`register DELETE method`, p);
         this.server.del(p,
             async (req: Request, res: Response, next: Next) => {
-                await this.promiseHandler(prom, req, res, next);
+                try {
+                    await this.promiseHandler(prom, req, res, next);
+                } catch (exception) {
+                    this.console.e(exception.code, exception.message);
+                    return res.send(500, {error: "internal errors", details: exception.message});
+                }
             });
     }
 
@@ -90,6 +105,7 @@ export abstract class RestController {
                 await prom.call(this, req, res, next);
                 return resolve();
             } catch (exception) {
+                console.log(exception);
                 this.console.e(this.constructor.name,
                     `could not resolve request`, req.getUrl(),
                     "returning 500", exception.message);

@@ -171,6 +171,11 @@ function Authorize() {
                         case 7: return [3 /*break*/, 9];
                         case 8:
                             exception_1 = _b.sent();
+                            // @ts-ignore
+                            if (this.console) {
+                                // @ts-ignore
+                                this.console.e(target.constructor.name, exception_1.message);
+                            }
                             res.send(500, { error: "server errors", details: exception_1.message });
                             if (next) {
                                 return [2 /*return*/, resolve(next())];

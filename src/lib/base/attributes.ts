@@ -107,6 +107,11 @@ export function Authorize(...roles: UserRole[]) {
                         return resolve(prom);
                     }
                 } catch (exception) {
+                    // @ts-ignore
+                    if (this.console) {
+                        // @ts-ignore
+                        this.console.e(target.constructor.name, exception.message);
+                    }
                     res.send(500, {error: "server errors", details: exception.message});
                     if (next) {
                         return resolve(next());

@@ -79,7 +79,7 @@ var RestController = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         exception_1 = _a.sent();
-                        console.error(exception_1);
+                        this.console.e(exception_1.code, exception_1.message);
                         return [2 /*return*/, res.send(500, { error: "internal errors", details: exception_1.message })];
                     case 3: return [2 /*return*/];
                 }
@@ -91,12 +91,20 @@ var RestController = /** @class */ (function () {
         var p = this.getFullPath(path);
         this.console.d("register GET method", p);
         this.server.get(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+            var exception_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        exception_2 = _a.sent();
+                        this.console.e(exception_2.code, exception_2.message);
+                        return [2 /*return*/, res.send(500, { error: "internal errors", details: exception_2.message })];
+                    case 3: return [2 /*return*/];
                 }
             });
         }); });
@@ -106,12 +114,20 @@ var RestController = /** @class */ (function () {
         var p = this.getFullPath(path);
         this.console.d("register PATCH method", p);
         this.server.patch(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+            var exception_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        exception_3 = _a.sent();
+                        this.console.e(exception_3.code, exception_3.message);
+                        return [2 /*return*/, res.send(500, { error: "internal errors", details: exception_3.message })];
+                    case 3: return [2 /*return*/];
                 }
             });
         }); });
@@ -121,12 +137,20 @@ var RestController = /** @class */ (function () {
         var p = this.getFullPath(path);
         this.console.d("register DELETE method", p);
         this.server.del(p, function (req, res, next) { return __awaiter(_this, void 0, void 0, function () {
+            var exception_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.promiseHandler(prom, req, res, next)];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 3];
+                    case 2:
+                        exception_4 = _a.sent();
+                        this.console.e(exception_4.code, exception_4.message);
+                        return [2 /*return*/, res.send(500, { error: "internal errors", details: exception_4.message })];
+                    case 3: return [2 /*return*/];
                 }
             });
         }); });
@@ -138,7 +162,7 @@ var RestController = /** @class */ (function () {
         var _this = this;
         this.console.d("handling request", req.method, req.getUrl().path);
         return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-            var exception_2;
+            var exception_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -148,9 +172,10 @@ var RestController = /** @class */ (function () {
                         _a.sent();
                         return [2 /*return*/, resolve()];
                     case 2:
-                        exception_2 = _a.sent();
-                        this.console.e(this.constructor.name, "could not resolve request", req.getUrl(), "returning 500", exception_2.message);
-                        res.send(500, { error: exception_2.message });
+                        exception_5 = _a.sent();
+                        console.log(exception_5);
+                        this.console.e(this.constructor.name, "could not resolve request", req.getUrl(), "returning 500", exception_5.message);
+                        res.send(500, { error: exception_5.message });
                         next();
                         return [2 /*return*/, resolve()];
                     case 3: return [2 /*return*/];
