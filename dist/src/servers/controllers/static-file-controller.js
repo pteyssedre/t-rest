@@ -33,10 +33,10 @@ var StaticFileController = /** @class */ (function () {
         var strPattern = "/.*\\.css|.*\\.html|.*\\.js|.*\\.png|.*\\.svg|.*\\.ico|.*\\.jpeg|.*\\.jpg|.*\\.woff|.*\\.woff2|.*\\.ttf/";
         if (this.props.extensionsAllowed) {
             strPattern = "";
-            for (var _i = 0, _a = this.props.extensionsAllowed; _i < _a.length; _i++) {
-                var ext = _a[_i];
+            for (var i = 0; i < this.props.extensionsAllowed.length; i++) {
+                var ext = this.props.extensionsAllowed[i];
                 if (strPattern.indexOf(ext) === -1) {
-                    strPattern += "|.\\." + ext;
+                    strPattern += "(!?\\." + ext + ")" + ((i + 1) < this.props.extensionsAllowed.length ? "|" : "");
                 }
             }
         }

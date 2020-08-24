@@ -133,6 +133,20 @@ describe("teys-rest", () => {
                     `<title>Title</title></head><body></body></html>\r\n`, "not index page");
             });
 
+            it("Should return javascript file with spa server", async () => {
+                const response = await axios.default.get("http://localhost:3000/test.js",
+                    {validateStatus: () => true});
+                assert(response.status === 200, "not working");
+                assert(response.headers["content-type"] === "application/javascript", "not javascript file");
+            });
+
+            it("Should return javascript file with point in name within spa server", async () => {
+                const response = await axios.default.get("http://localhost:3000/test.chunk.js",
+                    {validateStatus: () => true});
+                assert(response.status === 200, "not working");
+                assert(response.headers["content-type"] === "application/javascript", "not javascript file");
+            });
+
             it("Should return data.json with spa server", async () => {
                 const response = await axios.default.get("http://localhost:3000/data.json",
                     {validateStatus: () => true});

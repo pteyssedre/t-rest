@@ -264,6 +264,32 @@ describe("teys-rest", function () {
                     }
                 });
             }); });
+            it("Should return javascript file with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/test.js", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            assert(response.headers["content-type"] === "application/javascript", "not javascript file");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            it("Should return javascript file with point in name within spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, axios.default.get("http://localhost:3000/test.chunk.js", { validateStatus: function () { return true; } })];
+                        case 1:
+                            response = _a.sent();
+                            assert(response.status === 200, "not working");
+                            assert(response.headers["content-type"] === "application/javascript", "not javascript file");
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
             it("Should return data.json with spa server", function () { return __awaiter(void 0, void 0, void 0, function () {
                 var response;
                 return __generator(this, function (_a) {

@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Typescript REST server based on restify",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -42,7 +42,7 @@
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
     "gulp-typescript": "^5.0.1",
-    "mocha": "^5.2.0",
+    "mocha": "^8.1.1",
     "ts-node": "^8.5.2",
     "tslint": "^5.20.1"
   },
@@ -54,7 +54,7 @@
     "moment": "^2.24.0",
     "node-rsa": "^1.0.6",
     "reflect-metadata": "^0.1.13",
-    "restify": "^7.7.0",
+    "restify": "^8.5.1",
     "restify-cors-middleware": "^1.1.1",
     "teys-injector": "^1.0.3",
     "typescript": "^3.7.2"
