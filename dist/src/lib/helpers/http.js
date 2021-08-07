@@ -75,7 +75,9 @@ var HttpClient = /** @class */ (function () {
                                 response.file = fs.createReadStream(file_1.path);
                                 response.file.on("end", function () {
                                     response.file.close();
-                                    fs.unlinkSync(response.file.path);
+                                    if (fs.existsSync(response.file.path)) {
+                                        fs.unlinkSync(response.file.path);
+                                    }
                                 });
                                 return resolve(response);
                             });

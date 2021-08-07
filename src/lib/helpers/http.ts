@@ -68,7 +68,9 @@ export class HttpClient {
                                 response.file = fs.createReadStream(file.path);
                                 response.file.on("end", () => {
                                     response.file.close();
-                                    fs.unlinkSync(response.file.path);
+                                    if (fs.existsSync(response.file.path)) {
+                                        fs.unlinkSync(response.file.path);
+                                    }
                                 });
                                 return resolve(response);
                             });
