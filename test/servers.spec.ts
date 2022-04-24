@@ -1,14 +1,12 @@
-import * as chai from "chai";
+import {assert} from "chai";
 import * as path from "path";
 import {Injector} from "teys-injector";
-import {RestUser, UserRole} from "../src/lib/base";
+import {ApiServer, RestUser, SpaServer, UserRole} from "../src";
 import {RestUserProvider as Provider} from "../src/lib/base/providers";
-import {ApiServer, SpaServer} from "../src/servers";
 import {DefaultAccountController} from "../src/servers/controllers/default-account-controller";
 import {DefaultStatsController} from "../src/servers/controllers/default-stats-controller";
 
 const axios = require("axios");
-const assert = chai.assert;
 
 class RestUserProvider extends Provider {
     userById(id: number | string): Promise<RestUser> {
@@ -60,7 +58,7 @@ describe("teys-rest", () => {
                 }
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
-                const response = await axios.default.post("http://localhost:3000/api/v1/stats/user", { post: "is the best"},
+                const response = await axios.default.post("http://localhost:3000/api/v1/stats/user", {post: "is the best"},
                     {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
                 assert(response.status === 200);
                 assert(response.data.post === "is the best");
@@ -72,7 +70,7 @@ describe("teys-rest", () => {
                 }
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
-                const response = await axios.default.post("http://localhost:3000/api/v1/stats/500", { post: "is the best"},
+                const response = await axios.default.post("http://localhost:3000/api/v1/stats/500", {post: "is the best"},
                     {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
                 assert(response.status === 500);
                 assert(response.data.details === "automatic error validation");
