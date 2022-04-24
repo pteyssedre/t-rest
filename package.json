@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "Typescript REST server based on restify",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -14,7 +14,8 @@
   },
   "scripts": {
     "start": "gulp",
-    "test": "mocha ."
+    "test": "mocha",
+    "coverage": "nyc --reporter=html --reporter=text mocha"
   },
   "author": {
     "name": "Pierre Teyssedre",
@@ -38,6 +39,7 @@
     "@types/restify": "^7.2.12",
     "@types/sinon": "^7.5.1",
     "axios": "^0.21.1",
+    "nyc": "^15.1.0",
     "chai": "^4.2.0",
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",

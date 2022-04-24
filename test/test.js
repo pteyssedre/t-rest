@@ -1,1 +1,1 @@
-alert('test')
+const test = 'this is a test file';
