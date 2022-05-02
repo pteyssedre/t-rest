@@ -1,1 +1,1 @@
-const testChunk = 'chunk';
+const value = 'this is a test file';

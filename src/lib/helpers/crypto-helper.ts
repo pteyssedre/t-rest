@@ -28,7 +28,7 @@ export class CryptoHelper {
                 this.key = new NodeRSA(fs.readFileSync(this.privatePath));
                 this.crt = new NodeRSA(fs.readFileSync(this.publicPath));
                 return resolve();
-            } catch (exception) {
+            } catch (exception: any) {
                 return reject(exception);
             }
         });

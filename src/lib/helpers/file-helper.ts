@@ -32,7 +32,7 @@ export class FileHelper {
                     }
                 }
                 fs.appendFileSync(filePath, content);
-            } catch (exception) {
+            } catch (exception: any) {
                 return reject(exception);
             }
             return resolve();

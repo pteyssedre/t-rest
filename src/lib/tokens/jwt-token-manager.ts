@@ -80,7 +80,7 @@ export class JwtTokenManager {
                 return {valid: has1Role && valid, minuteLeft};
             }
             return {valid, minuteLeft};
-        } catch (exception) {
+        } catch (exception: any) {
             this.console.e(exception.message);
         }
         return {valid: false, minuteLeft: 0};

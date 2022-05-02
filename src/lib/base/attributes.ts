@@ -65,6 +65,7 @@ export function Authorize(...roles: UserRole[]) {
                     if (next) {
                         return resolve(next());
                     } else {
+                        // @ts-ignore
                         return resolve();
                     }
                 }
@@ -80,6 +81,7 @@ export function Authorize(...roles: UserRole[]) {
                     if (next) {
                         return resolve(next());
                     } else {
+                        // @ts-ignore
                         return resolve();
                     }
                 }
@@ -92,6 +94,7 @@ export function Authorize(...roles: UserRole[]) {
                         if (next) {
                             return resolve(next());
                         } else {
+                            // @ts-ignore
                             return resolve();
                         }
                     } else {
@@ -106,7 +109,7 @@ export function Authorize(...roles: UserRole[]) {
                         }
                         return resolve(prom);
                     }
-                } catch (exception) {
+                } catch (exception: any) {
                     // @ts-ignore
                     if (this.console) {
                         // @ts-ignore
@@ -116,6 +119,7 @@ export function Authorize(...roles: UserRole[]) {
                     if (next) {
                         return resolve(next());
                     } else {
+                        // @ts-ignore
                         return resolve();
                     }
                 }

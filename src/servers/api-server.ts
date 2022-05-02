@@ -73,7 +73,7 @@ export class ApiServer {
                     return resolve();
                 });
             });
-        } catch (e) {
+        } catch (e: any) {
             this.console.c("start", new Date(), e.message, e.stack);
         }
         this.console.d("start done");

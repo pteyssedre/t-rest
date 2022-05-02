@@ -1,19 +1,19 @@
 {
   "name": "teys-rest",
-  "version": "2.3.3",
+  "version": "2.4.1",
   "description": "Typescript REST server based on restify",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
-  "typings": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "typescript": {
-    "definition": "dist/src/index.d.ts"
+    "definition": "dist/index.d.ts"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/pteyssedre/teys-rest.git"
   },
   "scripts": {
-    "start": "gulp",
+    "start": "tsc",
     "test": "mocha",
     "coverage": "nyc --reporter=html --reporter=text mocha"
   },
@@ -31,34 +31,30 @@
   ],
   "license": "Apache-2.0",
   "devDependencies": {
-    "@types/chai": "^4.3.1",
-    "@types/jsonwebtoken": "^8.3.5",
+    "@types/chai": "4.3.1",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/mocha": "^9.1.1",
-    "@types/node": "^11.15.2",
+    "@types/node": "^12.20.50",
     "@types/node-rsa": "^1.1.1",
     "@types/restify": "^8.5.4",
-    "@types/sinon": "^7.5.1",
     "axios": "^0.26.1",
-    "nyc": "^15.1.0",
     "chai": "^4.3.6",
-    "gulp": "^4.0.2",
-    "gulp-clean": "^0.4.0",
-    "gulp-typescript": "^5.0.1",
-    "mocha": "^9.2.2",
-    "ts-node": "^9.1.1",
+    "mocha": "10.0.0",
+    "nyc": "^15.1.0",
+    "ts-node": "10.7.0",
     "tslint": "^6.1.3"
   },
   "dependencies": {
     "@types/restify-cors-middleware": "^1.0.2",
     "jsonwebtoken": "^8.5.1",
     "lazy-format-logger": "^1.0.3",
-    "mime-types": "^2.1.25",
+    "mime-types": "^2.1.35",
     "moment": "^2.29.3",
     "node-rsa": "^1.1.1",
     "reflect-metadata": "^0.1.13",
     "restify": "^8.6.0",
     "restify-cors-middleware": "^1.1.1",
     "teys-injector": "^1.0.4",
-    "typescript": "^3.7.2"
+    "typescript": "^4.6.4"
   }
 }

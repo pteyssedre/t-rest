@@ -44,7 +44,7 @@ export abstract class RestController {
             async (req: Request, res: Response, next: Next) => {
                 try {
                     await this.promiseHandler(prom, req, res, next);
-                } catch (exception) {
+                } catch (exception: any) {
                     this.console.e(exception.code, exception.message);
                     return res.send(500, {error: "internal errors", details: exception.message});
                 }
@@ -58,7 +58,7 @@ export abstract class RestController {
             async (req: Request, res: Response, next: Next) => {
                 try {
                     await this.promiseHandler(prom, req, res, next);
-                } catch (exception) {
+                } catch (exception: any) {
                     this.console.e(exception.code, exception.message);
                     return res.send(500, {error: "internal errors", details: exception.message});
                 }
@@ -72,7 +72,7 @@ export abstract class RestController {
             async (req: Request, res: Response, next: Next) => {
                 try {
                     await this.promiseHandler(prom, req, res, next);
-                } catch (exception) {
+                } catch (exception: any) {
                     this.console.e(exception.code, exception.message);
                     return res.send(500, {error: "internal errors", details: exception.message});
                 }
@@ -86,7 +86,7 @@ export abstract class RestController {
             async (req: Request, res: Response, next: Next) => {
                 try {
                     await this.promiseHandler(prom, req, res, next);
-                } catch (exception) {
+                } catch (exception: any) {
                     this.console.e(exception.code, exception.message);
                     return res.send(500, {error: "internal errors", details: exception.message});
                 }
@@ -103,14 +103,15 @@ export abstract class RestController {
         return new Promise<any>(async (resolve) => {
             try {
                 await prom.call(this, req, res, next);
+                // @ts-ignore
                 return resolve();
-            } catch (exception) {
-                console.log(exception);
+            } catch (exception: any) {
                 this.console.e(this.constructor.name,
                     `could not resolve request`, req.getUrl(),
                     "returning 500", exception.message);
                 res.send(500, {error: exception.message});
                 next();
+                // @ts-ignore
                 return resolve();
             }
         });

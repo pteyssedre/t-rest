@@ -24,7 +24,7 @@ export class StaticFileController {
                     }
                 }
                 return this.matchFile(req, res);
-            } catch (e) {
+            } catch (e: any) {
                 console.error("[StaticFileController]", e.message);
                 return res.send(404);
             }
