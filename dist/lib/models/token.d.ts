@@ -1,5 +1,5 @@
 export declare class Token {
-    algorithm: "HS256";
+    algorithm: "RS256";
     audience: string | number;
     expiresIn: string | number;
     issuer: string;

@@ -34,7 +34,7 @@ export class JwtTokenManager {
     async createAuthenticationToken(userId: number | string, roles?: number): Promise<string> {
         this.console.d("createAuthenticationToken", `for userId: ${userId}`);
         const token = {
-            algorithm: "HS256",
+            algorithm: "RS256",
             audience: userId,
             expiresIn: this.duration,
             issuer: this.domain,
@@ -42,13 +42,13 @@ export class JwtTokenManager {
             subject: "credentials",
             time: new Date().getTime(),
         };
-        return jwt.sign(token, fs.readFileSync(this.crypto.privatePath));
+        return jwt.sign(token, fs.readFileSync(this.crypto.privatePath), { algorithm: 'RS256' });
     }
 
     async readJwt(tokenValue: string): Promise<Token> {
         this.console.d("readJwt", tokenValue);
         return new Promise<any>((resolve) => {
-            jwt.verify(tokenValue, fs.readFileSync(this.crypto.privatePath), (err, decoded) => {
+            jwt.verify(tokenValue, fs.readFileSync(this.crypto.privatePath),(err, decoded) => {
                 if (err) {
                     this.console.e(err);
                 }

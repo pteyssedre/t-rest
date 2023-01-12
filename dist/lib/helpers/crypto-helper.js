@@ -51,8 +51,8 @@ var file_helper_1 = require("./file-helper");
 var CryptoHelper = /** @class */ (function () {
     function CryptoHelper() {
         this.base = "./certs";
-        this.privatePath = path.join(this.base, "server/key.pem");
-        this.publicPath = path.join(this.base, "client/key.pub");
+        this.privatePath = path.join(this.base, "private.pem");
+        this.publicPath = path.join(this.base, "public.pem");
     }
     CryptoHelper.prototype.initBase = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -66,10 +66,11 @@ var CryptoHelper = /** @class */ (function () {
                                     _a.trys.push([0, 4, , 5]);
                                     if (!(!fs.existsSync(this.privatePath) || !fs.existsSync(this.publicPath))) return [3 /*break*/, 3];
                                     this.keys = new NodeRSA({ b: 2048 });
-                                    return [4 /*yield*/, file_helper_1.FileHelper.createFileAsync(this.privatePath, this.keys.exportKey("private"))];
+                                    this.keys.generateKeyPair();
+                                    return [4 /*yield*/, file_helper_1.FileHelper.createFileAsync(this.privatePath, this.keys.exportKey("pkcs8-private"))];
                                 case 1:
                                     _a.sent();
-                                    return [4 /*yield*/, file_helper_1.FileHelper.createFileAsync(this.publicPath, this.keys.exportKey("public"))];
+                                    return [4 /*yield*/, file_helper_1.FileHelper.createFileAsync(this.publicPath, this.keys.exportKey("pkcs8-public"))];
                                 case 2:
                                     _a.sent();
                                     _a.label = 3;

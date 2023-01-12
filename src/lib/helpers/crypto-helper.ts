@@ -10,8 +10,8 @@ export class CryptoHelper {
     key: any;
     crt: any;
     base: string = "./certs";
-    privatePath = path.join(this.base, "server/key.pem");
-    publicPath = path.join(this.base, "client/key.pub");
+    privatePath = path.join(this.base, "private.pem");
+    publicPath = path.join(this.base, "public.pem");
 
     private keys: any;
 
@@ -21,8 +21,9 @@ export class CryptoHelper {
 
                 if (!fs.existsSync(this.privatePath) || !fs.existsSync(this.publicPath)) {
                     this.keys = new NodeRSA({b: 2048});
-                    await FileHelper.createFileAsync(this.privatePath, this.keys.exportKey("private"));
-                    await FileHelper.createFileAsync(this.publicPath, this.keys.exportKey("public"));
+                    this.keys.generateKeyPair();
+                    await FileHelper.createFileAsync(this.privatePath, this.keys.exportKey("pkcs8-private"));
+                    await FileHelper.createFileAsync(this.publicPath, this.keys.exportKey("pkcs8-public"));
                 }
 
                 this.key = new NodeRSA(fs.readFileSync(this.privatePath));

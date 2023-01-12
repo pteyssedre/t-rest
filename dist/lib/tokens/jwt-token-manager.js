@@ -71,7 +71,7 @@ var JwtTokenManager = /** @class */ (function () {
             return __generator(this, function (_a) {
                 this.console.d("createAuthenticationToken", "for userId: ".concat(userId));
                 token = {
-                    algorithm: "HS256",
+                    algorithm: "RS256",
                     audience: userId,
                     expiresIn: this.duration,
                     issuer: this.domain,
@@ -79,7 +79,8 @@ var JwtTokenManager = /** @class */ (function () {
                     subject: "credentials",
                     time: new Date().getTime(),
                 };
-                return [2 /*return*/, jwt.sign(token, fs.readFileSync(this.crypto.privatePath))];
+                console.log(this.crypto.privatePath);
+                return [2 /*return*/, jwt.sign(token, fs.readFileSync(this.crypto.privatePath), { algorithm: 'RS256' })];
             });
         });
     };

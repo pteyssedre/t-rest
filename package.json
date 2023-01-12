@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Typescript REST server based on restify",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -32,7 +32,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@types/chai": "4.3.1",
-    "@types/jsonwebtoken": "^8.5.8",
+    "@types/jsonwebtoken": "^9.0.0",
     "@types/mocha": "^9.1.1",
     "@types/node": "^12.20.50",
     "@types/node-rsa": "^1.1.1",
