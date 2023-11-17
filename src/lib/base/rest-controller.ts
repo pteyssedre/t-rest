@@ -102,17 +102,14 @@ export abstract class RestController {
         this.console.d(`handling request`, req.method, req.getUrl().path);
         return new Promise<any>(async (resolve) => {
             try {
-                await prom.call(this, req, res, next);
-                // @ts-ignore
-                return resolve();
+                const results = await prom.call(this, req, res, next);
+                return resolve(results);
             } catch (exception: any) {
                 this.console.e(this.constructor.name,
                     `could not resolve request`, req.getUrl(),
                     "returning 500", exception.message);
                 res.send(500, {error: exception.message});
-                next();
-                // @ts-ignore
-                return resolve();
+                return resolve(next());
             }
         });
     }

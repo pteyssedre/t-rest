@@ -13,7 +13,7 @@ export class StaticFileController {
         if (!this.props.public) {
             throw new Error("public path is not set");
         }
-        server.get("/*", (req, res) => {
+        server.get("/*", (req, res, next) => {
             try {
                 if (this.props.proxy) {
                     const data = Object.keys(this.props.proxy);

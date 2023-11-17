@@ -1,11 +1,12 @@
 import {Logger, LogLevel, LogOptions} from "lazy-format-logger";
 import * as restify from "restify";
 import {ServerOptions} from "restify";
-import {Options} from "restify-cors-middleware";
+import {Options} from "restify-cors-middleware2";
 import {Inject, Injectable, Injector} from "teys-injector";
 import {CryptoHelper, JwtTokenManager, RestController} from "../lib";
 
-const corsMiddleware = require("restify-cors-middleware");
+
+const corsMiddleware = require("restify-cors-middleware2");
 
 export interface ApiServerOption extends ServerOptions {
     domain?: string;
@@ -80,7 +81,7 @@ export class ApiServer {
         await this.afterStart();
     }
 
-    registerControllers(...controllers: Array<new(server: any) => RestController>): Promise<void> {
+    registerControllers(...controllers: (new(server: any) => RestController)[]): Promise<void> {
         return new Promise<void>((resolve) => {
             for (const ctr of controllers) {
                 this.console.d("registering", ctr.name);

@@ -4,6 +4,6 @@ import { ApiServer, ApiServerOption } from "./api-server";
 export declare class SpaServer extends ApiServer {
     constructor(props: ApiServerOption, logs?: LogOptions);
     beforeStart(): Promise<void>;
-    startWithControllers(...controllers: Array<new (server: any) => RestController>): Promise<void>;
+    startWithControllers(...controllers: (new (server: any) => RestController)[]): Promise<void>;
     stop(): void;
 }

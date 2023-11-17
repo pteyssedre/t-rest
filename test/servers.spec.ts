@@ -5,8 +5,7 @@ import {ApiServer, RestUser, SpaServer, UserRole} from "../src";
 import {RestUserProvider as Provider} from "../src/lib/base/providers";
 import {DefaultAccountController} from "../src/servers/controllers/default-account-controller";
 import {DefaultStatsController} from "../src/servers/controllers/default-stats-controller";
-
-const axios = require("axios");
+import axios from "axios";
 
 class RestUserProvider extends Provider {
     userById(id: number | string): Promise<RestUser> {
@@ -28,12 +27,12 @@ describe("teys-rest", () => {
             });
 
             it("Should return success with classic server", async () => {
-                const response = await axios.default.get("http://localhost:3000/api/v1/stats/echo");
+                const response = await axios.get("http://localhost:3000/api/v1/stats/echo");
                 assert(response.status === 200, "not working");
             });
 
             it("Should fail authentication with classic server", async () => {
-                const response = await axios.default.get("http://localhost:3000/api/v1/stats/user",
+                const response = await axios.get("http://localhost:3000/api/v1/stats/user",
                     {validateStatus: () => true});
                 assert(response.status === 401, "not working");
             });
@@ -45,7 +44,7 @@ describe("teys-rest", () => {
                 }
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
-                const response = await axios.default.get("http://localhost:3000/api/v1/stats/user",
+                const response = await axios.get("http://localhost:3000/api/v1/stats/user",
                     {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
                 assert(response.status === 200);
                 assert(response.data.user.userId === "1234");
@@ -58,7 +57,7 @@ describe("teys-rest", () => {
                 }
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
-                const response = await axios.default.post("http://localhost:3000/api/v1/stats/user", {post: "is the best"},
+                const response = await axios.post("http://localhost:3000/api/v1/stats/user", {post: "is the best"},
                     {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
                 assert(response.status === 200);
                 assert(response.data.post === "is the best");
@@ -70,7 +69,7 @@ describe("teys-rest", () => {
                 }
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
-                const response = await axios.default.post("http://localhost:3000/api/v1/stats/500", {post: "is the best"},
+                const response = await axios.post("http://localhost:3000/api/v1/stats/500", {post: "is the best"},
                     {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
                 assert(response.status === 500);
                 assert(response.data.details === "automatic error validation");
@@ -94,17 +93,16 @@ describe("teys-rest", () => {
                     },
                     public: path.join(__dirname, "./"),
                 });
-                // @ts-ignore
                 await spa.startWithControllers(DefaultAccountController, DefaultStatsController);
             });
 
             it("Should return success  with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/api/v1/stats/echo");
+                const response = await axios.get("http://localhost:3000/api/v1/stats/echo");
                 assert(response.status === 200, "not working");
             });
 
             it("Should fail authentication  with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/api/v1/stats/user",
+                const response = await axios.get("http://localhost:3000/api/v1/stats/user",
                     {validateStatus: () => true});
                 assert(response.status === 401, "not working");
             });
@@ -116,14 +114,14 @@ describe("teys-rest", () => {
                 }
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
-                const response = await axios.default.get("http://localhost:3000/api/v1/stats/user",
+                const response = await axios.get("http://localhost:3000/api/v1/stats/user",
                     {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
                 assert(response.status === 200);
                 assert(response.data.user.userId === "1234");
             });
 
             it("Should return default index.html with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/",
+                const response = await axios.get("http://localhost:3000/",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
                 assert(response.headers["content-type"] === "text/html", "not html file");
@@ -132,21 +130,21 @@ describe("teys-rest", () => {
             });
 
             it("Should return javascript file with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/test.js",
+                const response = await axios.get("http://localhost:3000/test.js",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
                 assert(response.headers["content-type"] === "application/javascript", "not javascript file");
             });
 
             it("Should return javascript file with point in name within spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/test.chunk.js",
+                const response = await axios.get("http://localhost:3000/test.chunk.js",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
                 assert(response.headers["content-type"] === "application/javascript", "not javascript file");
             });
 
             it("Should return data.json with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/data.json",
+                const response = await axios.get("http://localhost:3000/data.json",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
                 assert(response.headers["content-type"] === "application/json", "not json file");
@@ -154,13 +152,13 @@ describe("teys-rest", () => {
             });
 
             it("Should return 404 with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/data2.json",
+                const response = await axios.get("http://localhost:3000/data2.json",
                     {validateStatus: () => true});
                 assert(response.status === 404, "not working");
             });
 
             it("Should return images results with spa server", async () => {
-                const response = await axios.default.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg",
+                const response = await axios.get("http://localhost:3000/images/2019/09/25/19403277lpw-19403339-article-chat-etude-felin-jpg_6528763_660x281.jpg",
                     {validateStatus: () => true});
                 assert(response.status === 200, "not working");
                 assert(response.headers["content-type"].indexOf("image/jpeg") > -1, "not html");

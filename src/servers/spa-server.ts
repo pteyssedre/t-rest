@@ -16,7 +16,7 @@ export class SpaServer extends ApiServer {
         await super.beforeStart();
     }
 
-    async startWithControllers(...controllers: Array<new(server: any) => RestController>):
+    async startWithControllers(...controllers: (new(server: any) => RestController)[]):
         Promise<void> {
         await super.start();
         await super.registerControllers(...controllers);

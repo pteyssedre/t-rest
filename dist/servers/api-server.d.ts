@@ -1,7 +1,7 @@
 import { LogLevel, LogOptions } from "lazy-format-logger";
 import * as restify from "restify";
 import { ServerOptions } from "restify";
-import { Options } from "restify-cors-middleware";
+import { Options } from "restify-cors-middleware2";
 import { RestController } from "../lib";
 export interface ApiServerOption extends ServerOptions {
     domain?: string;
@@ -30,7 +30,7 @@ export declare class ApiServer {
     constructor(props?: ApiServerOption, logs?: LogOptions);
     beforeStart(): Promise<void>;
     start(): Promise<void>;
-    registerControllers(...controllers: Array<new (server: any) => RestController>): Promise<void>;
+    registerControllers(...controllers: (new (server: any) => RestController)[]): Promise<void>;
     afterStart(): Promise<void>;
     changeLogLevel(level: LogLevel): void;
     stop(): void;

@@ -1,4 +1,6 @@
 /// <reference types="node" />
+/// <reference types="node" />
+/// <reference types="node" />
 import { ReadStream } from "fs";
 import { IncomingMessage } from "http";
 import { UrlWithStringQuery } from "url";

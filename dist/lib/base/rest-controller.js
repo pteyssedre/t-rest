@@ -23,7 +23,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -163,23 +163,20 @@ var RestController = /** @class */ (function () {
         var _this = this;
         this.console.d("handling request", req.method, req.getUrl().path);
         return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-            var exception_5;
+            var results, exception_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         return [4 /*yield*/, prom.call(this, req, res, next)];
                     case 1:
-                        _a.sent();
-                        // @ts-ignore
-                        return [2 /*return*/, resolve()];
+                        results = _a.sent();
+                        return [2 /*return*/, resolve(results)];
                     case 2:
                         exception_5 = _a.sent();
                         this.console.e(this.constructor.name, "could not resolve request", req.getUrl(), "returning 500", exception_5.message);
                         res.send(500, { error: exception_5.message });
-                        next();
-                        // @ts-ignore
-                        return [2 /*return*/, resolve()];
+                        return [2 /*return*/, resolve(next())];
                     case 3: return [2 /*return*/];
                 }
             });

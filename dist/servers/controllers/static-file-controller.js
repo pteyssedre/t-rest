@@ -12,7 +12,7 @@ var StaticFileController = /** @class */ (function () {
         if (!this.props.public) {
             throw new Error("public path is not set");
         }
-        server.get("/*", function (req, res) {
+        server.get("/*", function (req, res, next) {
             try {
                 if (_this.props.proxy) {
                     var data = Object.keys(_this.props.proxy);
