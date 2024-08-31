@@ -19,6 +19,7 @@ export interface ApiServerOption extends ServerOptions {
     public?: string;
     version?: string;
     cors?: Options;
+    bodyParser?: restify.plugins.BodyParserOptions
 }
 
 @Injectable()
@@ -52,7 +53,7 @@ export class ApiServer {
 
     async beforeStart(): Promise<void> {
 
-        this.restify.use(restify.plugins.bodyParser());
+        this.restify.use(restify.plugins.bodyParser(this.props.bodyParser));
         this.restify.use(restify.plugins.queryParser());
 
         if (this.props.cors) {
