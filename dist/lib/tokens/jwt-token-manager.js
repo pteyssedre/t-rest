@@ -88,10 +88,11 @@ var JwtTokenManager = /** @class */ (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 this.console.d("readJwt", tokenValue);
-                return [2 /*return*/, new Promise(function (resolve) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
                         jwt.verify(tokenValue, fs.readFileSync(_this.crypto.privatePath), function (err, decoded) {
                             if (err) {
                                 _this.console.e(err);
+                                return reject(err);
                             }
                             return resolve(decoded);
                         });

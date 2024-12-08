@@ -104,7 +104,7 @@ function Authorize() {
                 args[_i] = arguments[_i];
             }
             return new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-                var req, res, next, token, tokenManager, userProvider, jwt, read, status, _a, prom, final, exception_1;
+                var req, res, next, token, tokenManager, userProvider, jwt, read, status, _a, prom, final, exception_1, errorCode;
                 return __generator(this, function (_b) {
                     switch (_b.label) {
                         case 0:
@@ -143,11 +143,12 @@ function Authorize() {
                         case 1:
                             _b.trys.push([1, 8, , 9]);
                             jwt = token.substr(7, token.length);
-                            return [4 /*yield*/, tokenManager.readJwt(jwt)];
+                            return [4 /*yield*/, tokenManager.readJwt(jwt)
+                                    .catch(function (ignored) { return null; })];
                         case 2:
                             read = _b.sent();
                             status = tokenManager.tokenStatus(read, roles);
-                            if (!!status.valid) return [3 /*break*/, 3];
+                            if (!(!status.valid || read === null)) return [3 /*break*/, 3];
                             res.send(401, { error: "unauthorized access" });
                             if (next) {
                                 return [2 /*return*/, resolve(next())];
@@ -180,7 +181,8 @@ function Authorize() {
                                 // @ts-ignore
                                 this.console.e(target.constructor.name, exception_1.message);
                             }
-                            res.send(500, { error: "server errors", details: exception_1.message });
+                            errorCode = exception_1.message.toLowerCase().indexOf('Invalid token') === 0 ? 401 : 500;
+                            res.send(errorCode, { error: "server errors", details: exception_1.message });
                             if (next) {
                                 return [2 /*return*/, resolve(next())];
                             }
