@@ -47,10 +47,11 @@ export class JwtTokenManager {
 
     async readJwt(tokenValue: string): Promise<Token> {
         this.console.d("readJwt", tokenValue);
-        return new Promise<any>((resolve) => {
+        return new Promise<any>((resolve, reject) => {
             jwt.verify(tokenValue, fs.readFileSync(this.crypto.privatePath),(err, decoded) => {
                 if (err) {
                     this.console.e(err);
+                    return reject(err);
                 }
                 return resolve(decoded);
             });

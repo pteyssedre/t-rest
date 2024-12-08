@@ -2,12 +2,13 @@ import {Injector} from "teys-injector";
 import {JwtTokenManager} from "../tokens";
 import {RestUserProvider} from "./providers";
 import {RestController, UserRole} from "./rest-controller";
+import {error} from "./responses";
 
 export function Delete(path: string = "") {
     return function <T extends RestController>(target: T, propertyKey: string, descriptor: PropertyDescriptor) {
         const original = descriptor.value;
         const setup = target.setupRoutes;
-        target.setupRoutes = function() {
+        target.setupRoutes = function () {
             setup.call(this);
             target.deleteRequest.call(this, path, original);
         };
@@ -19,7 +20,7 @@ export function Post(path: string = "") {
     return function <T extends RestController>(target: T, propertyKey: string, descriptor: PropertyDescriptor) {
         const original = descriptor.value;
         const setup = target.setupRoutes;
-        target.setupRoutes = function() {
+        target.setupRoutes = function () {
             setup.call(this);
             target.postRequest.call(this, path, original);
         };
@@ -31,7 +32,7 @@ export function Get(path: string = "") {
     return function <T extends RestController>(target: T, propertyKey: string, descriptor: PropertyDescriptor) {
         const original = descriptor.value;
         const setup = target.setupRoutes;
-        target.setupRoutes = function() {
+        target.setupRoutes = function () {
             setup.call(this);
             target.getRequest.call(this, path, original);
         };
@@ -43,7 +44,7 @@ export function Patch(path: string = "") {
     return function <T extends RestController>(target: T, propertyKey: string, descriptor: PropertyDescriptor) {
         const original = descriptor.value;
         const setup = target.setupRoutes;
-        target.setupRoutes = function() {
+        target.setupRoutes = function () {
             setup.call(this);
             target.patchRequest.call(this, path, original);
         };
@@ -52,9 +53,9 @@ export function Patch(path: string = "") {
 }
 
 export function Authorize(...roles: UserRole[]) {
-    return function(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         const original = descriptor.value;
-        descriptor.value = function(...args: any[]) {
+        descriptor.value = function (...args: any[]) {
             return new Promise<any>(async (resolve) => {
                 const req = args[0];
                 const res = args[1];
@@ -87,9 +88,10 @@ export function Authorize(...roles: UserRole[]) {
                 }
                 try {
                     const jwt = token.substr(7, token.length);
-                    const read = await tokenManager.readJwt(jwt);
+                    const read = await tokenManager.readJwt(jwt)
+                        .catch((ignored) => null);
                     const status = tokenManager.tokenStatus(read, roles);
-                    if (!status.valid) {
+                    if (!status.valid || read === null) {
                         res.send(401, {error: "unauthorized access"});
                         if (next) {
                             return resolve(next());
@@ -115,7 +117,8 @@ export function Authorize(...roles: UserRole[]) {
                         // @ts-ignore
                         this.console.e(target.constructor.name, exception.message);
                     }
-                    res.send(500, {error: "server errors", details: exception.message});
+                    const errorCode = exception.message.toLowerCase().indexOf('Invalid token') === 0 ? 401 : 500;
+                    res.send(errorCode, {error: "server errors", details: exception.message});
                     if (next) {
                         return resolve(next());
                     } else {

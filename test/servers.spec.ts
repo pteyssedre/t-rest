@@ -18,13 +18,13 @@ describe("teys-rest", () => {
     describe("ApiServer", () => {
 
         let api: ApiServer;
+        before(async () => {
+            Injector.Register("_class_restuserprovider", new RestUserProvider());
+            api = new ApiServer();
+            await api.start();
+            await api.registerControllers(DefaultAccountController, DefaultStatsController);
+        });
         describe("Testing pre-register server with classic server", () => {
-            before(async () => {
-                Injector.Register("_class_restuserprovider", new RestUserProvider());
-                api = new ApiServer();
-                await api.start();
-                await api.registerControllers(DefaultAccountController, DefaultStatsController);
-            });
 
             it("Should return success with classic server", async () => {
                 const response = await axios.get("http://localhost:3000/api/v1/stats/echo");
@@ -45,9 +45,20 @@ describe("teys-rest", () => {
                 const jwt = await (tokenM as any).createAuthenticationToken("1234", UserRole.Admin);
 
                 const response = await axios.get("http://localhost:3000/api/v1/stats/user",
-                    {headers: {authorization: `Bearer ${jwt}`}, validateStatus: () => true});
+                    {headers: {authorization: `Bearer ${jwt}`}, validateStatus: (status) => status === 200});
                 assert(response.status === 200);
                 assert(response.data.user.userId === "1234");
+            });
+
+            it("Should fail the authentication with classic server", async () => {
+                const tokenM = Injector.Resolve("_class_jwttokenmanager");
+                if (!tokenM) {
+                    return;
+                }
+
+                const response = await axios.get("http://localhost:3000/api/v1/stats/user",
+                    {headers: {authorization: `Bearer ${''}`}, validateStatus: (status) => status === 401});
+                assert(response.status === 401);
             });
 
             it("Should validate the body parser", async () => {

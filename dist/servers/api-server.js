@@ -75,7 +75,7 @@ var ApiServer = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a, origins, allowHeaders, exposeHeaders, CORS;
             return __generator(this, function (_b) {
-                this.restify.use(restify.plugins.bodyParser());
+                this.restify.use(restify.plugins.bodyParser(this.props.bodyParser));
                 this.restify.use(restify.plugins.queryParser());
                 if (this.props.cors) {
                     _a = this.props.cors, origins = _a.origins, allowHeaders = _a.allowHeaders, exposeHeaders = _a.exposeHeaders;

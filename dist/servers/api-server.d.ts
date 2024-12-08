@@ -18,6 +18,7 @@ export interface ApiServerOption extends ServerOptions {
     public?: string;
     version?: string;
     cors?: Options;
+    bodyParser?: restify.plugins.BodyParserOptions;
 }
 export declare class ApiServer {
     private static get defaultConfig();
