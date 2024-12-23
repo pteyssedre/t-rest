@@ -109,13 +109,13 @@ var JwtTokenManager = /** @class */ (function () {
             var now = moment();
             var expired = tokenTime.isBefore(now);
             if (expired) {
-                this.console.e("Token expired:".concat(claims.time, " token:").concat(claims));
+                this.console.e("Token expired:".concat(claims.time, " token:").concat(JSON.stringify(claims)));
                 return { valid: false, minuteLeft: 0 };
             }
             var minuteLeft = tokenTime.diff(now, "minute");
             var valid = claims && claims.issuer === this.domain;
             if (!valid) {
-                this.console.e("Token authentic:".concat(valid, " token:").concat(claims));
+                this.console.e("Token authentic:".concat(valid, " token:").concat(JSON.stringify(claims)));
                 return { valid: valid, minuteLeft: minuteLeft };
             }
             if (roles && roles.length > 0) {

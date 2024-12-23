@@ -1,6 +1,6 @@
 {
   "name": "teys-rest",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "description": "Typescript REST server based on restify",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@types/restify-cors-middleware": "^1.0.2",
+    "bunyan": "^1.8.15",
     "jsonwebtoken": "^9.0.0",
     "lazy-format-logger": "^1.0.3",
     "mime-types": "^2.1.35",

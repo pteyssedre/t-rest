@@ -67,13 +67,13 @@ export class JwtTokenManager {
             const now = moment();
             const expired = tokenTime.isBefore(now);
             if (expired) {
-                this.console.e(`Token expired:${claims.time} token:${claims}`);
+                this.console.e(`Token expired:${claims.time} token:${JSON.stringify(claims)}`);
                 return {valid: false, minuteLeft: 0};
             }
             const minuteLeft = tokenTime.diff(now, "minute");
             const valid = claims && claims.issuer === this.domain;
             if (!valid) {
-                this.console.e(`Token authentic:${valid} token:${claims}`);
+                this.console.e(`Token authentic:${valid} token:${JSON.stringify(claims)}`);
                 return {valid, minuteLeft};
             }
             if (roles && roles.length > 0) {

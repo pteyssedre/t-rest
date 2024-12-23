@@ -1,9 +1,10 @@
-import {Logger, LogLevel, LogOptions} from "lazy-format-logger";
+import { Logger, LogLevel, LogOptions } from "lazy-format-logger";
 import * as restify from "restify";
-import {ServerOptions} from "restify";
-import {Options} from "restify-cors-middleware2";
-import {Inject, Injectable, Injector} from "teys-injector";
-import {CryptoHelper, JwtTokenManager, RestController} from "../lib";
+import * as bunyan from "bunyan";
+import { ServerOptions } from "restify";
+import { Options } from "restify-cors-middleware2";
+import { Inject, Injectable, Injector } from "teys-injector";
+import { CryptoHelper, JwtTokenManager, RestController } from "../lib";
 
 
 const corsMiddleware = require("restify-cors-middleware2");
@@ -52,6 +53,30 @@ export class ApiServer {
     }
 
     async beforeStart(): Promise<void> {
+
+        this.restify.pre((req: restify.Request, res: restify.Response, next: restify.Next) => {
+          const { method, url } = req;
+          const start = Date.now();
+
+          res.on('finish', () => {
+            const duration = Date.now() - start;
+            const line = `${req.socket.remoteAddress} - - [${new Date().toUTCString()}] "${method} ${url} HTTP/${req.httpVersion}" ${res.statusCode} "${req.headers["user-agent"]}" ${duration}ms`;
+            if (this.logOptions.level === LogLevel.NO_LOG) {
+                console.log(line);
+            }else {
+              this.console.d(line);
+            }
+          });
+          next();
+        });
+
+        /*this.restify.on('after', restify.plugins.auditLogger({
+            event: "routed",
+            log: bunyan.createLogger({
+                name: 'audit',
+                stream: process.stdout
+            })
+        }));*/
 
         this.restify.use(restify.plugins.bodyParser(this.props.bodyParser));
         this.restify.use(restify.plugins.queryParser());

@@ -74,7 +74,30 @@ var ApiServer = /** @class */ (function () {
     ApiServer.prototype.beforeStart = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a, origins, allowHeaders, exposeHeaders, CORS;
+            var _this = this;
             return __generator(this, function (_b) {
+                this.restify.pre(function (req, res, next) {
+                    var method = req.method, url = req.url;
+                    var start = Date.now();
+                    res.on('finish', function () {
+                        var duration = Date.now() - start;
+                        var line = "".concat(req.socket.remoteAddress, " - - [").concat(new Date().toUTCString(), "] \"").concat(method, " ").concat(url, " HTTP/").concat(req.httpVersion, "\" ").concat(res.statusCode, " \"").concat(req.headers["user-agent"], "\" ").concat(duration, "ms");
+                        if (_this.logOptions.level === lazy_format_logger_1.LogLevel.NO_LOG) {
+                            console.log(line);
+                        }
+                        else {
+                            _this.console.d(line);
+                        }
+                    });
+                    next();
+                });
+                /*this.restify.on('after', restify.plugins.auditLogger({
+                    event: "routed",
+                    log: bunyan.createLogger({
+                        name: 'audit',
+                        stream: process.stdout
+                    })
+                }));*/
                 this.restify.use(restify.plugins.bodyParser(this.props.bodyParser));
                 this.restify.use(restify.plugins.queryParser());
                 if (this.props.cors) {
